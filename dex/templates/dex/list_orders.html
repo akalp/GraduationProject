@@ -1,24 +1,32 @@
 {% extends 'base.html' %}
-{% block title %} denemedeneme {% endblock %}
+{% block title %} Orders {% endblock %}
 {% block content %}
 
     <div class="container-fluid h-100">
         <div class="row h-100">
-            <div class="col-5 m-1 border">
+            <div class="col-2 border">
+                <h1>Games</h1>
+                <ul>
+                    {% for game in games %}
+                        <li><a href="{% url 'dex:list_order' game=game.pk %}">{{ game.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-5 border">
             <h1>Sell</h1>
                 <a href="{% url 'dex:add_sell' %}">ekle</a>
                 <ul>
-                    {% for order in orders %}
+                    {% for order in sell_orders %}
                         <li><a href="{% url 'dex:detail_sell' pk=order.pk %}">{{ order.pk }}</a> <a
                                 href="{% url 'dex:delete_sell' pk=order.pk %}">sil</a></li>
                     {% endfor %}
                 </ul>
             </div>
-            <div class="col-5 m-1 border">
+            <div class="col-5 border">
                 <h1>Buy</h1>
                 <a href="{% url 'dex:add_buy' %}">ekle</a>
                 <ul>
-                    {% for order in orders %}
+                    {% for order in buy_orders %}
                         <li><a href="{% url 'dex:detail_buy' pk=order.pk %}">{{ order.pk }}</a> <a
                                 href="{% url 'dex:delete_buy' pk=order.pk %}">sil</a></li>
                     {% endfor %}
