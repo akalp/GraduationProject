@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}{{ order.obj }}{% endblock %}
+{% block content %}
+    <div class="container">
+        {{ order.usr_addr }}
+        {{ order.obj }}
+        {{ order.value }}
+    </div>
+{% endblock %}
