@@ -8,5 +8,8 @@ urlpatterns = [
     path('list_all/', views.ListSellOrder.as_view(), name="list_sell"),
     path('addsellorder/', views.NewSellOrder.as_view(), name="add_sell"),
     path('show/<pk>', views.SellDetail.as_view(), name="detail_sell"),
-    path('delete/<pk>', views.DeleteSellOrder.as_view(), name="delete_sell")
+    path('delete/<pk>', views.DeleteSellOrder.as_view(), name="delete_sell"),
+    path('addsellorder/', views.NewSellOrder.as_view(), name="add_buy"),    # FIXME change view
+    path('show/<pk>', views.SellDetail.as_view(), name="detail_buy"),       # FIXME change view
+    path('delete/<pk>', views.DeleteSellOrder.as_view(), name="delete_buy") # FIXME change view
 ]

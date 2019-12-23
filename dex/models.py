@@ -7,11 +7,6 @@ class Order(models.Model):
     usr_addr = models.CharField(max_length=42)
     obj = models.CharField(max_length=255)
     value = models.CharField(max_length=255)    # Float ise ether, integer veya karakter ise token
-    timestamp = models.CharField(max_length=255, null=True, blank=True)
-
-    def save(self, *args, **kwargs):
-        self.timestamp = datetime.now()
-        self.save(*args, **kwargs)
 
 
 class SellOrder(Order):
