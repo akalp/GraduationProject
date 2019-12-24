@@ -10,7 +10,7 @@ urlpatterns = [
     path('addsellorder/', views.NewSellOrder.as_view(), name="add_sell"),
     path('sell_detail/<pk>', views.SellDetail.as_view(), name="detail_sell"),
     path('delete_sell/<pk>', views.DeleteSellOrder.as_view(), name="delete_sell"),
-    path('addbuyorder/', views.NewBuyOrder.as_view(), name="add_buy"),    # FIXME change view
-    path('buy_detail/<pk>', views.BuyDetail.as_view(), name="detail_buy"),       # FIXME change view
-    path('delete_buy/<pk>', views.DeleteBuyOrder.as_view(), name="delete_buy") # FIXME change view
+    path('addbuyorder/', views.NewBuyOrder.as_view(), name="add_buy"),
+    path('buy_detail/<pk>', views.BuyDetail.as_view(), name="detail_buy"),
+    path('delete_buy/<pk>', views.DeleteBuyOrder.as_view(), name="delete_buy")
 ]

@@ -14,11 +14,10 @@ class ListOrder(generic.TemplateView):
 
     def get_context_data(self, **kwargs):
         game = kwargs.get('game')
-        print(game)
         context = super().get_context_data(**kwargs)
         context['games'] = Game.objects.all()
-        context['sell_orders'] = SellOrder.objects.filter(game=game if game else Game.objects.first().pk)
-        context['buy_orders'] = BuyOrder.objects.filter(game=game if game else Game.objects.first().pk)
+        context['sell_orders'] = SellOrder.objects.filter(obj__game=game if game else Game.objects.first().pk)
+        context['buy_orders'] = BuyOrder.objects.filter(obj__game=game if game else Game.objects.first().pk)
         return context
 
 
@@ -26,7 +25,9 @@ class NewSellOrder(generic.CreateView):
     template_name = 'dex/new_order.html'
     form_class = SellOrderForm
     model = SellOrder
-    redirect_field_name = "blog/detail.html"
+
+    def get_success_url(self):
+        return reverse_lazy('dex:list_order', kwargs={'game' : self.object.obj.game.pk})
 
 
 class SellDetail(generic.DetailView):
@@ -44,7 +45,10 @@ class NewBuyOrder(generic.CreateView):
     template_name = 'dex/new_order.html'
     form_class = BuyOrderForm
     model = BuyOrder
-    redirect_field_name = "blog/detail.html"
+
+    def get_success_url(self):
+        return reverse_lazy('dex:list_order', kwargs={'game' : self.object.obj.game.pk})
+
 
 
 class BuyDetail(generic.DetailView):

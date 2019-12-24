@@ -1,36 +1,111 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %} Orders {% endblock %}
-{% block content %}
+{% block style %}
+        <link rel="stylesheet" href="{% static 'sidebar.css' %}">
+        <style>
+            .dappalphabet {
+                position: fixed;
+                left: 0;
+                width: 40px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: space-around;
+                height: 100%;
+                top: 0;
+                padding-top: 64px;
+            }
 
+            .spacebetween {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                cursor: pointer;
+                font-size: 14px;
+            }
+
+            .dapplistlogo {
+                border-radius: 3px;
+                height: 32px;
+                width: 32px;
+                margin-right: 5px;
+            }
+        </style>
+    {% endblock %}
+{% block content %}
     <div class="container-fluid h-100">
         <div class="row h-100">
-            <div class="col-2 border">
-                <h1>Games</h1>
-                <ul>
-                    {% for game in games %}
-                        <li><a href="{% url 'dex:list_order' game=game.pk %}">{{ game.name }}</a></li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="col-5 border">
-            <h1>Sell</h1>
-                <a href="{% url 'dex:add_sell' %}">ekle</a>
-                <ul>
-                    {% for order in sell_orders %}
-                        <li><a href="{% url 'dex:detail_sell' pk=order.pk %}">{{ order.pk }}</a> <a
-                                href="{% url 'dex:delete_sell' pk=order.pk %}">sil</a></li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="col-5 border">
-                <h1>Buy</h1>
-                <a href="{% url 'dex:add_buy' %}">ekle</a>
-                <ul>
-                    {% for order in buy_orders %}
-                        <li><a href="{% url 'dex:detail_buy' pk=order.pk %}">{{ order.pk }}</a> <a
-                                href="{% url 'dex:delete_buy' pk=order.pk %}">sil</a></li>
-                    {% endfor %}
-                </ul>
+            <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+                <div class="sidebar-sticky">
+                    <div class="dappalphabet">
+                        <div class="alphabet">A</div>
+                        <div class="alphabet">B</div>
+                        <div class="alphabet">C</div>
+                        <div class="alphabet">D</div>
+                        <div class="alphabet">E</div>
+                        <div class="alphabet">F</div>
+                        <div class="alphabet">G</div>
+                        <div class="alphabet">H</div>
+                        <div class="alphabet">I</div>
+                        <div class="alphabet">J</div>
+                        <div class="alphabet">K</div>
+                        <div class="alphabet">L</div>
+                        <div class="alphabet">M</div>
+                        <div class="alphabet">N</div>
+                        <div class="alphabet">O</div>
+                        <div class="alphabet">P</div>
+                        <div class="alphabet">Q</div>
+                        <div class="alphabet">R</div>
+                        <div class="alphabet">S</div>
+                        <div class="alphabet">T</div>
+                        <div class="alphabet">U</div>
+                        <div class="alphabet">V</div>
+                        <div class="alphabet">W</div>
+                        <div class="alphabet">X</div>
+                        <div class="alphabet">Y</div>
+                        <div class="alphabet">Z</div>
+                    </div>
+                    <ul>
+                        <li class="spacebetween" style="color: rgb(191, 191, 191); margin-bottom: 1rem;">
+                            <div style="display: flex; align-items: center; width: 100%;"></div>
+                        </li>
+                        {% for game in games %}
+                            <li class="spacebetween" style="color: rgb(191, 191, 191); margin-bottom: 1rem;">
+                                <a href="{% url 'dex:list_order' game=game.pk %}">
+                                    <div style="display: flex; align-items: center; width: 100%;">
+                                        <img class="dapplistlogo" src="{{ game.img.url }}">
+                                        <div>{{ game.name }}</div>
+                                    </div>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </nav>
+            <div class="col-md-9 ml-sm-auto col-lg-10 px-4">
+                <div class="row h-100">
+                    <div class="col-6 border">
+                        <h1>Sell</h1>
+                        <a href="{% url 'dex:add_sell' %}">ekle</a>
+                        <ul>
+                            {% for order in sell_orders %}
+                                <li><a href="{% url 'dex:detail_sell' pk=order.pk %}">{{ order.pk }}</a> <a
+                                        href="{% url 'dex:delete_sell' pk=order.pk %}">sil</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-6 border">
+                        <h1>Buy</h1>
+                        <a href="{% url 'dex:add_buy' %}">ekle</a>
+                        <ul>
+                            {% for order in buy_orders %}
+                                <li><a href="{% url 'dex:detail_buy' pk=order.pk %}">{{ order.pk }}</a> <a
+                                        href="{% url 'dex:delete_buy' pk=order.pk %}">sil</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
