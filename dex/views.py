@@ -27,8 +27,8 @@ class ListOrder(generic.TemplateView):
         if game:
             context['games'] = Game.objects.filter(name__istartswith=Game.objects.get(pk=game).name[:1])
             context['game'] = game
-            context['sell_orders'] = SellOrder.objects.filter(obj__game=game)
-            context['buy_orders'] = BuyOrder.objects.filter(obj__game=game)
+            context['sell_orders'] = SellOrder.objects.filter(obj__game=game).order_by('-timestamp')
+            context['buy_orders'] = BuyOrder.objects.filter(obj__game=game).order_by('-timestamp')
         else:
             context['games'] = Game.objects.all()
             context['sell_orders'] = SellOrder.objects.all()
