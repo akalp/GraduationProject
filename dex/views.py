@@ -33,7 +33,7 @@ class NewSellOrder(generic.CreateView):
         return data
 
     def get_success_url(self):
-        return reverse_lazy('dex:list_order', kwargs={'game' : self.object.obj.game.pk})
+        return reverse_lazy('dex:list_order', kwargs={'game': self.object.obj.game.pk})
 
 
 class SellDetail(generic.DetailView):
@@ -44,7 +44,15 @@ class SellDetail(generic.DetailView):
 
 class DeleteSellOrder(generic.DeleteView):
     model = SellOrder
-    success_url = reverse_lazy('dex:list_order')
+    template_name = 'dex/order_delete.html'
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['url'] = reverse('dex:delete_sell', kwargs={'pk': self.object.pk})
+        return data
+
+    def get_success_url(self):
+        return reverse_lazy('dex:list_order', kwargs={'game': self.object.obj.game.pk})
 
 
 class NewBuyOrder(generic.CreateView):
@@ -59,8 +67,7 @@ class NewBuyOrder(generic.CreateView):
         return data
 
     def get_success_url(self):
-        return reverse_lazy('dex:list_order', kwargs={'game' : self.object.obj.game.pk})
-
+        return reverse_lazy('dex:list_order', kwargs={'game': self.object.obj.game.pk})
 
 
 class BuyDetail(generic.DetailView):
@@ -71,4 +78,12 @@ class BuyDetail(generic.DetailView):
 
 class DeleteBuyOrder(generic.DeleteView):
     model = BuyOrder
-    success_url = reverse_lazy('dex:list_order')
+    template_name = 'dex/order_delete.html'
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['url'] = reverse('dex:delete_buy', kwargs={'pk': self.object.pk})
+        return data
+
+    def get_success_url(self):
+        return reverse_lazy('dex:list_order', kwargs={'game': self.object.obj.game.pk})

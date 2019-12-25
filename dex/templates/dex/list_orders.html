@@ -164,7 +164,7 @@
                                                 </div>
                                             </div>
                                             <div class="assetname text-center">{{ order.obj.name }}
-                                                <a href="{% url 'dex:delete_sell' pk=order.pk %}">sil</a>
+                                                <a type="button" class="btn-sm btn-danger text-white order-button" data-url="{% url 'dex:delete_sell' pk=order.pk %}">Sil</a>
                                             </div>
                                             <div class="assetvaluediv">
                                                 <div class="assetvalue text-center">{{ order.value }}&nbsp;ETH</div>
@@ -200,7 +200,7 @@
                                                 </div>
                                             </div>
                                             <div class="assetname text-center">{{ order.obj.name }}
-                                                <a href="{% url 'dex:delete_buy' pk=order.pk %}">sil</a>
+                                                <a type="button" class="btn-sm btn-danger text-white order-button" data-url="{% url 'dex:delete_buy' pk=order.pk %}">Sil</a>
                                             </div>
                                             <div class="assetvaluediv">
                                                 <div class="assetvalue text-center">{{ order.value }}&nbsp;ETH</div>
