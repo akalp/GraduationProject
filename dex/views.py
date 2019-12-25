@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views import generic
-from dex.models import SellOrder, BuyOrder, Game
+from dex.models import SellOrder, BuyOrder, Game, Token
 from dex.forms import SellOrderForm, BuyOrderForm
 
 
@@ -9,15 +9,30 @@ class IndexView(generic.TemplateView):
     template_name = 'index.html'
 
 
+class GameListView(generic.ListView):
+    modal = Game
+    context_object_name = 'games'
+    template_name = 'dex/gamelist.html'
+
+    def get_queryset(self):
+        return Game.objects.filter(name__istartswith=self.kwargs.get('c'))
+
+
 class ListOrder(generic.TemplateView):
     template_name = 'dex/list_orders.html'
 
     def get_context_data(self, **kwargs):
-        game = kwargs.get('game')
         context = super().get_context_data(**kwargs)
-        context['games'] = Game.objects.all()
-        context['sell_orders'] = SellOrder.objects.filter(obj__game=game if game else Game.objects.first().pk)
-        context['buy_orders'] = BuyOrder.objects.filter(obj__game=game if game else Game.objects.first().pk)
+        game = kwargs.get('game')
+        if game:
+            context['games'] = Game.objects.filter(name__istartswith=Game.objects.get(pk=game).name[:1])
+            context['game'] = game
+            context['sell_orders'] = SellOrder.objects.filter(obj__game=game)
+            context['buy_orders'] = BuyOrder.objects.filter(obj__game=game)
+        else:
+            context['games'] = Game.objects.all()
+            context['sell_orders'] = SellOrder.objects.all()
+            context['buy_orders'] = BuyOrder.objects.all()
         return context
 
 
@@ -28,6 +43,8 @@ class NewSellOrder(generic.CreateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        data['form'].fields['obj'].queryset = Token.objects.filter(
+            game__name=Game.objects.get(pk=self.request.GET['game']).name)
         data['title'] = "Satış Emri Ekle"
         data['url'] = reverse('dex:add_sell')
         return data
@@ -62,6 +79,8 @@ class NewBuyOrder(generic.CreateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        data['form'].fields['obj'].queryset = Token.objects.filter(
+            game__name=Game.objects.get(pk=self.request.GET['game']).name)
         data['title'] = "Alış Emri Ekle"
         data['url'] = reverse('dex:add_buy')
         return data

@@ -84,6 +84,10 @@
                 transform: rotate(360deg);
             }
         }
+
+        .alphabet {
+            cursor: pointer;
+        }
     </style>
 {% endblock %}
 {% block content %}
@@ -92,32 +96,32 @@
             <nav class="col-md-2 d-none d-md-block bg-light sidebar">
                 <div class="sidebar-sticky">
                     <div class="dappalphabet">
-                        <div class="alphabet">A</div>
-                        <div class="alphabet">B</div>
-                        <div class="alphabet">C</div>
-                        <div class="alphabet">D</div>
-                        <div class="alphabet">E</div>
-                        <div class="alphabet">F</div>
-                        <div class="alphabet">G</div>
-                        <div class="alphabet">H</div>
-                        <div class="alphabet">I</div>
-                        <div class="alphabet">J</div>
-                        <div class="alphabet">K</div>
-                        <div class="alphabet">L</div>
-                        <div class="alphabet">M</div>
-                        <div class="alphabet">N</div>
-                        <div class="alphabet">O</div>
-                        <div class="alphabet">P</div>
-                        <div class="alphabet">Q</div>
-                        <div class="alphabet">R</div>
-                        <div class="alphabet">S</div>
-                        <div class="alphabet">T</div>
-                        <div class="alphabet">U</div>
-                        <div class="alphabet">V</div>
-                        <div class="alphabet">W</div>
-                        <div class="alphabet">X</div>
-                        <div class="alphabet">Y</div>
-                        <div class="alphabet">Z</div>
+                        <a data-url="{% url 'dex:game_list' c='a' %}" class="alphabet">A</a>
+                        <a data-url="{% url 'dex:game_list' c='b' %}" class="alphabet">B</a>
+                        <a data-url="{% url 'dex:game_list' c='c' %}" class="alphabet">C</a>
+                        <a data-url="{% url 'dex:game_list' c='d' %}" class="alphabet">D</a>
+                        <a data-url="{% url 'dex:game_list' c='e' %}" class="alphabet">E</a>
+                        <a data-url="{% url 'dex:game_list' c='f' %}" class="alphabet">F</a>
+                        <a data-url="{% url 'dex:game_list' c='g' %}" class="alphabet">G</a>
+                        <a data-url="{% url 'dex:game_list' c='h' %}" class="alphabet">H</a>
+                        <a data-url="{% url 'dex:game_list' c='i' %}" class="alphabet">I</a>
+                        <a data-url="{% url 'dex:game_list' c='j' %}" class="alphabet">J</a>
+                        <a data-url="{% url 'dex:game_list' c='k' %}" class="alphabet">K</a>
+                        <a data-url="{% url 'dex:game_list' c='l' %}" class="alphabet">L</a>
+                        <a data-url="{% url 'dex:game_list' c='m' %}" class="alphabet">M</a>
+                        <a data-url="{% url 'dex:game_list' c='n' %}" class="alphabet">N</a>
+                        <a data-url="{% url 'dex:game_list' c='o' %}" class="alphabet">O</a>
+                        <a data-url="{% url 'dex:game_list' c='p' %}" class="alphabet">P</a>
+                        <a data-url="{% url 'dex:game_list' c='q' %}" class="alphabet">Q</a>
+                        <a data-url="{% url 'dex:game_list' c='r' %}" class="alphabet">R</a>
+                        <a data-url="{% url 'dex:game_list' c='s' %}" class="alphabet">S</a>
+                        <a data-url="{% url 'dex:game_list' c='t' %}" class="alphabet">T</a>
+                        <a data-url="{% url 'dex:game_list' c='u' %}" class="alphabet">U</a>
+                        <a data-url="{% url 'dex:game_list' c='v' %}" class="alphabet">V</a>
+                        <a data-url="{% url 'dex:game_list' c='w' %}" class="alphabet">W</a>
+                        <a data-url="{% url 'dex:game_list' c='x' %}" class="alphabet">X</a>
+                        <a data-url="{% url 'dex:game_list' c='y' %}" class="alphabet">Y</a>
+                        <a data-url="{% url 'dex:game_list' c='z' %}" class="alphabet">Z</a>
                     </div>
                     <ul>
                         <li class="spacebetween" style="color: rgb(191, 191, 191); margin-bottom: 1rem;">
@@ -125,16 +129,18 @@
                                 <span>Games</span>
                             </h6>
                         </li>
-                        {% for game in games %}
-                            <li class="spacebetween" style="color: rgb(191, 191, 191); margin-bottom: 1rem;">
-                                <a href="{% url 'dex:list_order' game=game.pk %}">
-                                    <div style="display: flex; align-items: center; width: 100%;">
-                                        <img class="dapplistlogo" src="{{ game.img.url }}">
-                                        <div>{{ game.name }}</div>
-                                    </div>
-                                </a>
-                            </li>
-                        {% endfor %}
+                        <div id="game-list">
+                            {% for game in games %}
+                                <li class="spacebetween" style="color: rgb(191, 191, 191); margin-bottom: 1rem;">
+                                    <a href="{% url 'dex:list_order' game=game.pk %}">
+                                        <div style="display: flex; align-items: center; width: 100%;">
+                                            <img class="dapplistlogo" src="{{ game.img.url }}">
+                                            <div>{{ game.name }}</div>
+                                        </div>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </div>
                     </ul>
                 </div>
             </nav>
@@ -143,10 +149,12 @@
                     <div class="col-6 order-table border-right">
                         <div class="text-center">
                             <h1>Sell&nbsp;
-                                <button class="btn btn-sm btn-success mb-2 order-button"
-                                        data-url="{% url 'dex:add_sell' %}" data-target="#modal">
-                                    {% fa 'fa-plus' %}&nbsp;Satış Emri Ekle
-                                </button>
+                                {% if game %}
+                                    <button class="btn btn-sm btn-success mb-2 order-button"
+                                            data-url="{% url 'dex:add_sell' %}?game={{ game }}" data-target="#modal">
+                                        {% fa 'fa-plus' %}&nbsp;Satış Emri Ekle
+                                    </button>
+                                {% endif %}
                             </h1>
                         </div>
                         <div class="row justify-content-center">
@@ -164,7 +172,8 @@
                                                 </div>
                                             </div>
                                             <div class="assetname text-center">{{ order.obj.name }}
-                                                <a type="button" class="btn-sm btn-danger text-white order-button" data-url="{% url 'dex:delete_sell' pk=order.pk %}">Sil</a>
+                                                <a type="button" class="btn-sm btn-danger text-white order-button"
+                                                   data-url="{% url 'dex:delete_sell' pk=order.pk %}">Sil</a>
                                             </div>
                                             <div class="assetvaluediv">
                                                 <div class="assetvalue text-center">{{ order.value }}&nbsp;ETH</div>
@@ -179,10 +188,12 @@
                     <div class="col-6 order-table border-right">
                         <div class="text-center">
                             <h1>Buy&nbsp;
-                                <button class="btn btn-sm btn-success mb-2 order-button"
-                                        data-url="{% url 'dex:add_buy' %}" data-target="#modal">
-                                    {% fa 'fa-plus' %}&nbsp;Alış Emri Ekle
-                                </button>
+                                {% if game %}
+                                    <button class="btn btn-sm btn-success mb-2 order-button"
+                                            data-url="{% url 'dex:add_buy' %}?game={{ game }}" data-target="#modal">
+                                        {% fa 'fa-plus' %}&nbsp;Alış Emri Ekle
+                                    </button>
+                                {% endif %}
                             </h1>
                         </div>
                         <div class="row justify-content-center">
@@ -200,7 +211,8 @@
                                                 </div>
                                             </div>
                                             <div class="assetname text-center">{{ order.obj.name }}
-                                                <a type="button" class="btn-sm btn-danger text-white order-button" data-url="{% url 'dex:delete_buy' pk=order.pk %}">Sil</a>
+                                                <a type="button" class="btn-sm btn-danger text-white order-button"
+                                                   data-url="{% url 'dex:delete_buy' pk=order.pk %}">Sil</a>
                                             </div>
                                             <div class="assetvaluediv">
                                                 <div class="assetvalue text-center">{{ order.value }}&nbsp;ETH</div>
@@ -218,16 +230,29 @@
 {% endblock %}
 {% block script %}
     <script>
-        let loading = '<div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-body"><div class="loader"></div></div></div></div>';
+        let loading = '<div class="loader"></div>';
+        let modal_loading = '<div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-body"><div class="loader"></div></div></div></div>';
         $('.order-button').on('click', function () {
             $.ajax({
-                beforeSend: function(){
-                    $('#modal').html(loading);
+                beforeSend: function () {
+                    $('#modal').html(modal_loading);
                     $('#modal').modal('show');
                 },
                 url: $(this).attr('data-url'),
                 success: function (result) {
                     $('#modal').html(result);
+                }
+            })
+        });
+
+        $('.alphabet').on('click', function () {
+            $.ajax({
+                beforeSend: function () {
+                    $('#game-list').html(loading);
+                },
+                url: $(this).attr('data-url'),
+                success: function (result) {
+                    $('#game-list').html(result);
                 }
             })
         });
