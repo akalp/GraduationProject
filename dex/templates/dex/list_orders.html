@@ -1,41 +1,75 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static font_awesome %}
 {% block title %} Orders {% endblock %}
 {% block style %}
-        <link rel="stylesheet" href="{% static 'sidebar.css' %}">
-        <style>
-            .dappalphabet {
-                position: fixed;
-                left: 0;
-                width: 40px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: space-around;
-                height: 100%;
-                top: 0;
-                padding-top: 64px;
-            }
+    <link rel="stylesheet" href="{% static 'sidebar.css' %}">
+    <style>
+        .dappalphabet {
+            position: fixed;
+            left: 0;
+            width: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            height: 100%;
+            top: 0;
+            padding-top: 64px;
+        }
 
-            .spacebetween {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                cursor: pointer;
-                font-size: 14px;
-            }
+        .spacebetween {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
 
-            .dapplistlogo {
-                border-radius: 3px;
-                height: 32px;
-                width: 32px;
-                margin-right: 5px;
-            }
-        </style>
-    {% endblock %}
+        .dapplistlogo {
+            border-radius: 3px;
+            height: 32px;
+            width: 32px;
+            margin-right: 5px;
+        }
+
+        .assetscontentitem {
+            width: 160px;
+            padding: 8px;
+        }
+
+        .assetcontenimgdiv {
+            width: 100%;
+            height: 0;
+            padding-bottom: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .assetcontenimg {
+            width: 100%;
+            position: absolute;
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .assetimg {
+            object-fit: contain;
+        }
+
+        .cover {
+            width: 100%;
+            border-radius: 3px;
+            -webkit-animation: coverimg .8s ease-in-out;
+        }
+
+        .order-table {
+            overflow-y: auto;
+            height: calc(100vh - 64px);
+        }
+    </style>
+{% endblock %}
 {% block content %}
-    <div class="container-fluid h-100">
-        <div class="row h-100">
+    <div class="container-fluid">
+        <div class="row">
             <nav class="col-md-2 d-none d-md-block bg-light sidebar">
                 <div class="sidebar-sticky">
                     <div class="dappalphabet">
@@ -68,7 +102,9 @@
                     </div>
                     <ul>
                         <li class="spacebetween" style="color: rgb(191, 191, 191); margin-bottom: 1rem;">
-                            <div style="display: flex; align-items: center; width: 100%;"></div>
+                            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                                <span>Saved reports</span>
+                            </h6>
                         </li>
                         {% for game in games %}
                             <li class="spacebetween" style="color: rgb(191, 191, 191); margin-bottom: 1rem;">
@@ -84,26 +120,80 @@
                 </div>
             </nav>
             <div class="col-md-9 ml-sm-auto col-lg-10 px-4">
-                <div class="row h-100">
-                    <div class="col-6 border">
-                        <h1>Sell</h1>
-                        <a href="{% url 'dex:add_sell' %}">ekle</a>
-                        <ul>
+                <div class="row">
+                    <div class="col-6 order-table border-right">
+                        <div class="text-center">
+                            <h1>Sell&nbsp;
+                                <a href="{% url 'dex:add_sell' %}">
+                                    <button class="btn btn-sm btn-success mb-2">
+                                        {% fa 'fa-plus' %}&nbsp;Satış Emri Ekle
+                                    </button>
+                                </a>
+                            </h1>
+                        </div>
+                        <div class="row justify-content-center">
                             {% for order in sell_orders %}
-                                <li><a href="{% url 'dex:detail_sell' pk=order.pk %}">{{ order.pk }}</a> <a
-                                        href="{% url 'dex:delete_sell' pk=order.pk %}">sil</a></li>
+                                <a href="{% url 'dex:detail_sell' pk=order.pk %}">
+                                    <div class="assetscontentitem border col-md-2 m-2">
+                                        <div style="width: 100%;">
+                                            <div class="assetcontenimgdiv">
+                                                <div class="assetcontenimg">
+                                                    <div style="width: 100%; height: 100%; position: relative;">
+                                                        <img class="assetimg cover"
+                                                             src="{{ order.obj.img.url }}"
+                                                             alt=" ">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="assetname text-center">{{ order.obj.name }}
+                                                <a href="{% url 'dex:delete_sell' pk=order.pk %}">sil</a>
+                                            </div>
+                                            <div class="assetvaluediv">
+                                                <div class="assetvalue text-center">{{ order.value }}&nbsp;ETH</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+
                             {% endfor %}
-                        </ul>
+                        </div>
                     </div>
-                    <div class="col-6 border">
-                        <h1>Buy</h1>
-                        <a href="{% url 'dex:add_buy' %}">ekle</a>
-                        <ul>
+                    <div class="col-6 order-table border-right">
+                        <div class="text-center">
+                            <h1>Buy&nbsp;
+                                <a href="{% url 'dex:add_buy' %}">
+                                    <button class="btn btn-sm btn-success mb-2">
+                                        {% fa 'fa-plus' %}&nbsp;Alış Emri Ekle
+                                    </button>
+                                </a>
+                            </h1>
+                        </div>
+                        <div class="row justify-content-center">
                             {% for order in buy_orders %}
-                                <li><a href="{% url 'dex:detail_buy' pk=order.pk %}">{{ order.pk }}</a> <a
-                                        href="{% url 'dex:delete_buy' pk=order.pk %}">sil</a></li>
+                                <a href="{% url 'dex:detail_buy' pk=order.pk %}">
+                                    <div class="assetscontentitem border col-md-2 m-2">
+                                        <div style="width: 100%;">
+                                            <div class="assetcontenimgdiv">
+                                                <div class="assetcontenimg">
+                                                    <div style="width: 100%; height: 100%; position: relative;">
+                                                        <img class="assetimg cover"
+                                                             src="{{ order.obj.img.url }}"
+                                                             alt=" ">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="assetname text-center">{{ order.obj.name }}
+                                                <a href="{% url 'dex:delete_buy' pk=order.pk %}">sil</a>
+                                            </div>
+                                            <div class="assetvaluediv">
+                                                <div class="assetvalue text-center">{{ order.value }}&nbsp;ETH</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+
                             {% endfor %}
-                        </ul>
+                        </div>
                     </div>
                 </div>
             </div>
