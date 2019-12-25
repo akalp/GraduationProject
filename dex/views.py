@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views import generic
 from dex.models import SellOrder, BuyOrder, Game
 from dex.forms import SellOrderForm, BuyOrderForm
@@ -26,6 +26,12 @@ class NewSellOrder(generic.CreateView):
     form_class = SellOrderForm
     model = SellOrder
 
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['title'] = "Satış Emri Ekle"
+        data['url'] = reverse('dex:add_sell')
+        return data
+
     def get_success_url(self):
         return reverse_lazy('dex:list_order', kwargs={'game' : self.object.obj.game.pk})
 
@@ -45,6 +51,12 @@ class NewBuyOrder(generic.CreateView):
     template_name = 'dex/new_order.html'
     form_class = BuyOrderForm
     model = BuyOrder
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['title'] = "Alış Emri Ekle"
+        data['url'] = reverse('dex:add_buy')
+        return data
 
     def get_success_url(self):
         return reverse_lazy('dex:list_order', kwargs={'game' : self.object.obj.game.pk})

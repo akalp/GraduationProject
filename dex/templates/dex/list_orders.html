@@ -65,6 +65,24 @@
             overflow-y: auto;
             height: calc(100vh - 64px);
         }
+
+        .loader {
+            border: 16px solid #f3f3f3; /* Light grey */
+            border-top: 16px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 {% endblock %}
 {% block content %}
@@ -124,11 +142,10 @@
                     <div class="col-6 order-table border-right">
                         <div class="text-center">
                             <h1>Sell&nbsp;
-                                <a href="{% url 'dex:add_sell' %}">
-                                    <button class="btn btn-sm btn-success mb-2">
-                                        {% fa 'fa-plus' %}&nbsp;Satış Emri Ekle
-                                    </button>
-                                </a>
+                                <button class="btn btn-sm btn-success mb-2 order-button"
+                                        data-url="{% url 'dex:add_sell' %}" data-target="#modal">
+                                    {% fa 'fa-plus' %}&nbsp;Satış Emri Ekle
+                                </button>
                             </h1>
                         </div>
                         <div class="row justify-content-center">
@@ -161,11 +178,10 @@
                     <div class="col-6 order-table border-right">
                         <div class="text-center">
                             <h1>Buy&nbsp;
-                                <a href="{% url 'dex:add_buy' %}">
-                                    <button class="btn btn-sm btn-success mb-2">
-                                        {% fa 'fa-plus' %}&nbsp;Alış Emri Ekle
-                                    </button>
-                                </a>
+                                <button class="btn btn-sm btn-success mb-2 order-button"
+                                        data-url="{% url 'dex:add_buy' %}" data-target="#modal">
+                                    {% fa 'fa-plus' %}&nbsp;Alış Emri Ekle
+                                </button>
                             </h1>
                         </div>
                         <div class="row justify-content-center">
@@ -191,7 +207,6 @@
                                         </div>
                                     </div>
                                 </a>
-
                             {% endfor %}
                         </div>
                     </div>
@@ -199,4 +214,18 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block script %}
+    <script>
+        $('.order-button').on('click', function () {
+            $.ajax({
+                url: $(this).attr('data-url'),
+                success: function (result) {
+                    $('#modal').html(result);
+                    $('#modal').modal('show');
+                }
+            })
+        });
+    </script>
+
 {% endblock %}
