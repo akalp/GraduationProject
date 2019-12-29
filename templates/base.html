@@ -1,4 +1,4 @@
-{% load static bootstrap4 font_awesome %}
+{% load static bootstrap4 %}
 <!DOCTYPE html>
 <html lang="en" class="h-100">
 <head>
@@ -6,8 +6,7 @@
     <title>{% block title %}{% endblock %}</title>
 
     {% bootstrap_css %}
-    {% fa_css %}
-
+    <link rel="stylesheet" href="{% static 'vendor/fontawesome-free-5.12.0-web/css/all.min.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'sfn.css' %}" type="text/css">
     {% block style %}{% endblock %}
 </head>

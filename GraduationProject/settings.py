@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'dex.apps.DexConfig',
     'bootstrap4',
-    'fa',
 ]
 
 MIDDLEWARE = [

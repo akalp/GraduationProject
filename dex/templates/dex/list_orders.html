@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static font_awesome %}
+{% load static %}
 {% block title %} Orders {% endblock %}
 {% block style %}
     <link rel="stylesheet" href="{% static 'sidebar.css' %}">
@@ -152,7 +152,7 @@
                                 {% if game %}
                                     <button class="btn btn-sm btn-success mb-2 order-button"
                                             data-url="{% url 'dex:add_sell' %}?game={{ game }}" data-target="#modal">
-                                        {% fa 'fa-plus' %}&nbsp;Satış Emri Ekle
+                                        <i class="fa fa-plus"></i>&nbsp;Satış Emri Ekle
                                     </button>
                                 {% endif %}
                             </h1>
@@ -191,7 +191,7 @@
                                 {% if game %}
                                     <button class="btn btn-sm btn-success mb-2 order-button"
                                             data-url="{% url 'dex:add_buy' %}?game={{ game }}" data-target="#modal">
-                                        {% fa 'fa-plus' %}&nbsp;Alış Emri Ekle
+                                        <i class="fa fa-plus"></i>&nbsp;Alış Emri Ekle
                                     </button>
                                 {% endif %}
                             </h1>
