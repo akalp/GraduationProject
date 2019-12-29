@@ -1,0 +1,51 @@
+<nav class="col-md-2 d-none d-md-block bg-light sidebar">
+    <div class="sidebar-sticky">
+        <div class="dappalphabet">
+            <a data-url="{% url 'dex:game_list' c='a' %}?from={{from}}" class="alphabet">A</a>
+            <a data-url="{% url 'dex:game_list' c='b' %}?from={{from}}" class="alphabet">B</a>
+            <a data-url="{% url 'dex:game_list' c='c' %}?from={{from}}" class="alphabet">C</a>
+            <a data-url="{% url 'dex:game_list' c='d' %}?from={{from}}" class="alphabet">D</a>
+            <a data-url="{% url 'dex:game_list' c='e' %}?from={{from}}" class="alphabet">E</a>
+            <a data-url="{% url 'dex:game_list' c='f' %}?from={{from}}" class="alphabet">F</a>
+            <a data-url="{% url 'dex:game_list' c='g' %}?from={{from}}" class="alphabet">G</a>
+            <a data-url="{% url 'dex:game_list' c='h' %}?from={{from}}" class="alphabet">H</a>
+            <a data-url="{% url 'dex:game_list' c='i' %}?from={{from}}" class="alphabet">I</a>
+            <a data-url="{% url 'dex:game_list' c='j' %}?from={{from}}" class="alphabet">J</a>
+            <a data-url="{% url 'dex:game_list' c='k' %}?from={{from}}" class="alphabet">K</a>
+            <a data-url="{% url 'dex:game_list' c='l' %}?from={{from}}" class="alphabet">L</a>
+            <a data-url="{% url 'dex:game_list' c='m' %}?from={{from}}" class="alphabet">M</a>
+            <a data-url="{% url 'dex:game_list' c='n' %}?from={{from}}" class="alphabet">N</a>
+            <a data-url="{% url 'dex:game_list' c='o' %}?from={{from}}" class="alphabet">O</a>
+            <a data-url="{% url 'dex:game_list' c='p' %}?from={{from}}" class="alphabet">P</a>
+            <a data-url="{% url 'dex:game_list' c='q' %}?from={{from}}" class="alphabet">Q</a>
+            <a data-url="{% url 'dex:game_list' c='r' %}?from={{from}}" class="alphabet">R</a>
+            <a data-url="{% url 'dex:game_list' c='s' %}?from={{from}}" class="alphabet">S</a>
+            <a data-url="{% url 'dex:game_list' c='t' %}?from={{from}}" class="alphabet">T</a>
+            <a data-url="{% url 'dex:game_list' c='u' %}?from={{from}}" class="alphabet">U</a>
+            <a data-url="{% url 'dex:game_list' c='v' %}?from={{from}}" class="alphabet">V</a>
+            <a data-url="{% url 'dex:game_list' c='w' %}?from={{from}}" class="alphabet">W</a>
+            <a data-url="{% url 'dex:game_list' c='x' %}?from={{from}}" class="alphabet">X</a>
+            <a data-url="{% url 'dex:game_list' c='y' %}?from={{from}}" class="alphabet">Y</a>
+            <a data-url="{% url 'dex:game_list' c='z' %}?from={{from}}" class="alphabet">Z</a>
+        </div>
+        <ul>
+            <li class="spacebetween" style="color: rgb(191, 191, 191); margin-bottom: 1rem;">
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                    <span>Games</span>
+                </h6>
+            </li>
+            <div id="game-list">
+                {% for game in games %}
+                    <li class="spacebetween" style="color: rgb(191, 191, 191); margin-bottom: 1rem;">
+                        <a href="{{url}}{{game.pk}}">
+                            <div style="display: flex; align-items: center; width: 100%;">
+                                <img class="dapplistlogo" src="{{ game.img.url }}">
+                                <div>{{ game.name }}</div>
+                            </div>
+                        </a>
+                    </li>
+                {% endfor %}
+            </div>
+        </ul>
+    </div>
+</nav>

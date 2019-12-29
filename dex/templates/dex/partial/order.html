@@ -1,0 +1,22 @@
+<a href="{{detail_url}}">
+    <div class="assetscontentitem border col-md-2 m-2">
+        <div style="width: 100%;">
+            <div class="assetcontenimgdiv">
+                <div class="assetcontenimg">
+                    <div style="width: 100%; height: 100%; position: relative;">
+                        <img class="assetimg cover"
+                             src="{{ order.obj.img.url }}"
+                             alt=" ">
+                    </div>
+                </div>
+            </div>
+            <div class="assetname text-center">{{ order.obj.name }}
+                <a type="button" class="btn-sm btn-danger text-white order-button"
+                   data-url="{{delete_url}}">Sil</a>
+            </div>
+            <div class="assetvaluediv">
+                <div class="assetvalue text-center">{{ order.value }}&nbsp;ETH</div>
+            </div>
+        </div>
+    </div>
+</a>

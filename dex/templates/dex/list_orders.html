@@ -1,149 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %} Orders {% endblock %}
-{% block style %}
-    <link rel="stylesheet" href="{% static 'sidebar.css' %}">
-    <style>
-        .dappalphabet {
-            position: fixed;
-            left: 0;
-            width: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-around;
-            height: 100%;
-            top: 0;
-            padding-top: 64px;
-        }
-
-        .spacebetween {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-        }
-
-        .dapplistlogo {
-            border-radius: 3px;
-            height: 32px;
-            width: 32px;
-            margin-right: 5px;
-        }
-
-        .assetscontentitem {
-            width: 160px;
-            padding: 8px;
-        }
-
-        .assetcontenimgdiv {
-            width: 100%;
-            height: 0;
-            padding-bottom: 100%;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .assetcontenimg {
-            width: 100%;
-            position: absolute;
-            height: 100%;
-            border-radius: 4px;
-        }
-
-        .assetimg {
-            object-fit: contain;
-        }
-
-        .cover {
-            width: 100%;
-            border-radius: 3px;
-            -webkit-animation: coverimg .8s ease-in-out;
-        }
-
-        .order-table {
-            overflow-y: auto;
-            height: calc(100vh - 64px);
-        }
-
-        .loader {
-            border: 16px solid #f3f3f3; /* Light grey */
-            border-top: 16px solid #3498db; /* Blue */
-            border-radius: 50%;
-            width: 120px;
-            height: 120px;
-            animation: spin 2s linear infinite;
-            margin: auto;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .alphabet {
-            cursor: pointer;
-        }
-    </style>
-{% endblock %}
 {% block content %}
     <div class="container-fluid">
         <div class="row">
-            <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-                <div class="sidebar-sticky">
-                    <div class="dappalphabet">
-                        <a data-url="{% url 'dex:game_list' c='a' %}" class="alphabet">A</a>
-                        <a data-url="{% url 'dex:game_list' c='b' %}" class="alphabet">B</a>
-                        <a data-url="{% url 'dex:game_list' c='c' %}" class="alphabet">C</a>
-                        <a data-url="{% url 'dex:game_list' c='d' %}" class="alphabet">D</a>
-                        <a data-url="{% url 'dex:game_list' c='e' %}" class="alphabet">E</a>
-                        <a data-url="{% url 'dex:game_list' c='f' %}" class="alphabet">F</a>
-                        <a data-url="{% url 'dex:game_list' c='g' %}" class="alphabet">G</a>
-                        <a data-url="{% url 'dex:game_list' c='h' %}" class="alphabet">H</a>
-                        <a data-url="{% url 'dex:game_list' c='i' %}" class="alphabet">I</a>
-                        <a data-url="{% url 'dex:game_list' c='j' %}" class="alphabet">J</a>
-                        <a data-url="{% url 'dex:game_list' c='k' %}" class="alphabet">K</a>
-                        <a data-url="{% url 'dex:game_list' c='l' %}" class="alphabet">L</a>
-                        <a data-url="{% url 'dex:game_list' c='m' %}" class="alphabet">M</a>
-                        <a data-url="{% url 'dex:game_list' c='n' %}" class="alphabet">N</a>
-                        <a data-url="{% url 'dex:game_list' c='o' %}" class="alphabet">O</a>
-                        <a data-url="{% url 'dex:game_list' c='p' %}" class="alphabet">P</a>
-                        <a data-url="{% url 'dex:game_list' c='q' %}" class="alphabet">Q</a>
-                        <a data-url="{% url 'dex:game_list' c='r' %}" class="alphabet">R</a>
-                        <a data-url="{% url 'dex:game_list' c='s' %}" class="alphabet">S</a>
-                        <a data-url="{% url 'dex:game_list' c='t' %}" class="alphabet">T</a>
-                        <a data-url="{% url 'dex:game_list' c='u' %}" class="alphabet">U</a>
-                        <a data-url="{% url 'dex:game_list' c='v' %}" class="alphabet">V</a>
-                        <a data-url="{% url 'dex:game_list' c='w' %}" class="alphabet">W</a>
-                        <a data-url="{% url 'dex:game_list' c='x' %}" class="alphabet">X</a>
-                        <a data-url="{% url 'dex:game_list' c='y' %}" class="alphabet">Y</a>
-                        <a data-url="{% url 'dex:game_list' c='z' %}" class="alphabet">Z</a>
-                    </div>
-                    <ul>
-                        <li class="spacebetween" style="color: rgb(191, 191, 191); margin-bottom: 1rem;">
-                            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                                <span>Games</span>
-                            </h6>
-                        </li>
-                        <div id="game-list">
-                            {% for game in games %}
-                                <li class="spacebetween" style="color: rgb(191, 191, 191); margin-bottom: 1rem;">
-                                    <a href="{% url 'dex:list_order' game=game.pk %}">
-                                        <div style="display: flex; align-items: center; width: 100%;">
-                                            <img class="dapplistlogo" src="{{ game.img.url }}">
-                                            <div>{{ game.name }}</div>
-                                        </div>
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </div>
-                    </ul>
-                </div>
-            </nav>
+            {% include 'dex/partial/game-sidebar.html' with from="list_orders" %}
             <div class="col-md-9 ml-sm-auto col-lg-10 px-4">
                 <div class="row">
                     <div class="col-6 order-table border-right">
@@ -159,29 +20,9 @@
                         </div>
                         <div class="row justify-content-center">
                             {% for order in sell_orders %}
-                                <a href="{% url 'dex:detail_sell' pk=order.pk %}">
-                                    <div class="assetscontentitem border col-md-2 m-2">
-                                        <div style="width: 100%;">
-                                            <div class="assetcontenimgdiv">
-                                                <div class="assetcontenimg">
-                                                    <div style="width: 100%; height: 100%; position: relative;">
-                                                        <img class="assetimg cover"
-                                                             src="{{ order.obj.img.url }}"
-                                                             alt=" ">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="assetname text-center">{{ order.obj.name }}
-                                                <a type="button" class="btn-sm btn-danger text-white order-button"
-                                                   data-url="{% url 'dex:delete_sell' pk=order.pk %}">Sil</a>
-                                            </div>
-                                            <div class="assetvaluediv">
-                                                <div class="assetvalue text-center">{{ order.value }}&nbsp;ETH</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-
+                                {% url 'dex:detail_sell' pk=order.pk as detail_url %}
+                                {% url 'dex:delete_sell' pk=order.pk as delete_url %}
+                                {% include 'dex/partial/order.html' with detail_url=detail_url delete_url=delete_url%}
                             {% endfor %}
                         </div>
                     </div>
@@ -198,28 +39,9 @@
                         </div>
                         <div class="row justify-content-center">
                             {% for order in buy_orders %}
-                                <a href="{% url 'dex:detail_buy' pk=order.pk %}">
-                                    <div class="assetscontentitem border col-md-2 m-2">
-                                        <div style="width: 100%;">
-                                            <div class="assetcontenimgdiv">
-                                                <div class="assetcontenimg">
-                                                    <div style="width: 100%; height: 100%; position: relative;">
-                                                        <img class="assetimg cover"
-                                                             src="{{ order.obj.img.url }}"
-                                                             alt=" ">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="assetname text-center">{{ order.obj.name }}
-                                                <a type="button" class="btn-sm btn-danger text-white order-button"
-                                                   data-url="{% url 'dex:delete_buy' pk=order.pk %}">Sil</a>
-                                            </div>
-                                            <div class="assetvaluediv">
-                                                <div class="assetvalue text-center">{{ order.value }}&nbsp;ETH</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
+                                {% url 'dex:detail_buy' pk=order.pk as detail_url %}
+                                {% url 'dex:delete_buy' pk=order.pk as delete_url %}
+                                {% include 'dex/partial/order.html' with detail_url=detail_url delete_url=delete_url%}
                             {% endfor %}
                         </div>
                     </div>
@@ -229,33 +51,5 @@
     </div>
 {% endblock %}
 {% block script %}
-    <script>
-        let loading = '<div class="loader"></div>';
-        let modal_loading = '<div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-body"><div class="loader"></div></div></div></div>';
-        $('.order-button').on('click', function () {
-            $.ajax({
-                beforeSend: function () {
-                    $('#modal').html(modal_loading);
-                    $('#modal').modal('show');
-                },
-                url: $(this).attr('data-url'),
-                success: function (result) {
-                    $('#modal').html(result);
-                }
-            })
-        });
-
-        $('.alphabet').on('click', function () {
-            $.ajax({
-                beforeSend: function () {
-                    $('#game-list').html(loading);
-                },
-                url: $(this).attr('data-url'),
-                success: function (result) {
-                    $('#game-list').html(result);
-                }
-            })
-        });
-    </script>
-
+    <script src="{% static 'js/ajax.js' %}"></script>
 {% endblock %}

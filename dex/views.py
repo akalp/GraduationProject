@@ -17,6 +17,15 @@ class GameListView(generic.ListView):
     def get_queryset(self):
         return Game.objects.filter(name__istartswith=self.kwargs.get('c'))
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.GET["from"] == "list_orders":
+            context["url"] = reverse("dex:list_order")
+        else:
+            context["url"] = reverse("dex:profile")
+
+        return context
+
 
 class ListOrder(generic.TemplateView):
     template_name = 'dex/list_orders.html'
@@ -24,6 +33,7 @@ class ListOrder(generic.TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         game = kwargs.get('game')
+        context["url"] = reverse('dex:list_order')
         if game:
             context['games'] = Game.objects.filter(name__istartswith=Game.objects.get(pk=game).name[:1])
             context['game'] = game
@@ -31,8 +41,8 @@ class ListOrder(generic.TemplateView):
             context['buy_orders'] = BuyOrder.objects.filter(obj__game=game).order_by('-timestamp')
         else:
             context['games'] = Game.objects.all()
-            context['sell_orders'] = SellOrder.objects.all()
-            context['buy_orders'] = BuyOrder.objects.all()
+            context['sell_orders'] = SellOrder.objects.all().order_by('-timestamp')
+            context['buy_orders'] = BuyOrder.objects.all().order_by('-timestamp')
         return context
 
 
@@ -106,3 +116,13 @@ class DeleteBuyOrder(generic.DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('dex:list_order', kwargs={'game': self.object.obj.game.pk})
+
+
+class ProfileView(generic.TemplateView):
+    template_name = 'dex/profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['games'] = Game.objects.all()
+        context['url'] = reverse('dex:profile')
+        return context
