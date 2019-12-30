@@ -7,43 +7,11 @@
             {% include 'dex/partial/game-sidebar.html' with from="list_orders" %}
             <div class="col-md-9 ml-sm-auto col-lg-10 px-4">
                 <div class="row">
-                    <div class="col-6 order-table border-right">
-                        <div class="text-center">
-                            <h1>Sell&nbsp;
-                                {% if game %}
-                                    <button class="btn btn-sm btn-success mb-2 order-button"
-                                            data-url="{% url 'dex:add_sell' %}?game={{ game }}" data-target="#modal">
-                                        <i class="fa fa-plus"></i>&nbsp;Satış Emri Ekle
-                                    </button>
-                                {% endif %}
-                            </h1>
-                        </div>
-                        <div class="row justify-content-center">
-                            {% for order in sell_orders %}
-                                {% url 'dex:detail_sell' pk=order.pk as detail_url %}
-                                {% url 'dex:delete_sell' pk=order.pk as delete_url %}
-                                {% include 'dex/partial/order.html' with detail_url=detail_url delete_url=delete_url%}
-                            {% endfor %}
-                        </div>
+                    <div id="sell_orders_table" class="col-6 order-table border-right">
+                        {{ sell|safe }}
                     </div>
-                    <div class="col-6 order-table border-right">
-                        <div class="text-center">
-                            <h1>Buy&nbsp;
-                                {% if game %}
-                                    <button class="btn btn-sm btn-success mb-2 order-button"
-                                            data-url="{% url 'dex:add_buy' %}?game={{ game }}" data-target="#modal">
-                                        <i class="fa fa-plus"></i>&nbsp;Alış Emri Ekle
-                                    </button>
-                                {% endif %}
-                            </h1>
-                        </div>
-                        <div class="row justify-content-center">
-                            {% for order in buy_orders %}
-                                {% url 'dex:detail_buy' pk=order.pk as detail_url %}
-                                {% url 'dex:delete_buy' pk=order.pk as delete_url %}
-                                {% include 'dex/partial/order.html' with detail_url=detail_url delete_url=delete_url%}
-                            {% endfor %}
-                        </div>
+                    <div id="buy_orders_table" class="col-6 order-table border-right">
+                        {{ buy|safe }}
                     </div>
                 </div>
             </div>

@@ -35,16 +35,7 @@
                 </h6>
             </li>
             <div id="game-list">
-                {% for game in games %}
-                    <li class="spacebetween" style="color: rgb(191, 191, 191); margin-bottom: 1rem;">
-                        <a href="{{url}}{{game.pk}}">
-                            <div style="display: flex; align-items: center; width: 100%;">
-                                <img class="dapplistlogo" src="{{ game.img.url }}">
-                                <div>{{ game.name }}</div>
-                            </div>
-                        </a>
-                    </li>
-                {% endfor %}
+                {% include 'dex/partial/gamelist.html' %}
             </div>
         </ul>
     </div>

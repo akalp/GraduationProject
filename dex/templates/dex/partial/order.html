@@ -1,22 +1,36 @@
-<a href="{{detail_url}}">
-    <div class="assetscontentitem border col-md-2 m-2">
-        <div style="width: 100%;">
-            <div class="assetcontenimgdiv">
-                <div class="assetcontenimg">
-                    <div style="width: 100%; height: 100%; position: relative;">
-                        <img class="assetimg cover"
-                             src="{{ order.obj.img.url }}"
-                             alt=" ">
+<div class="text-center">
+    <h1>{{ title }}&nbsp;
+        {% if game %}
+            <button class="btn btn-sm btn-success mb-2 order-button"
+                    data-url="{{ add_url }}?game={{ game }}" data-target="#modal">
+                <i class="fa fa-plus"></i>&nbsp;{{ button_title }}
+            </button>
+        {% endif %}
+    </h1>
+</div>
+<div class="row justify-content-center">
+    {% for order in orders %}
+        <a href="{{ detail_url }}{{ order.pk }}">
+            <div class="assetscontentitem border col-md-2 m-2">
+                <div style="width: 100%;">
+                    <div class="assetcontenimgdiv">
+                        <div class="assetcontenimg">
+                            <div style="width: 100%; height: 100%; position: relative;">
+                                <img class="assetimg cover"
+                                     src="{{ order.obj.img.url }}"
+                                     alt=" ">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="assetname text-center">{{ order.obj.name }}
+                        <a type="button" class="btn-sm btn-danger text-white order-button"
+                           data-url="{{ delete_url }}{{ order.pk }}">Sil</a>
+                    </div>
+                    <div class="assetvaluediv">
+                        <div class="assetvalue text-center">{{ order.value }}&nbsp;ETH</div>
                     </div>
                 </div>
             </div>
-            <div class="assetname text-center">{{ order.obj.name }}
-                <a type="button" class="btn-sm btn-danger text-white order-button"
-                   data-url="{{delete_url}}">Sil</a>
-            </div>
-            <div class="assetvaluediv">
-                <div class="assetvalue text-center">{{ order.value }}&nbsp;ETH</div>
-            </div>
-        </div>
-    </div>
-</a>
+        </a>
+    {% endfor %}
+</div>
