@@ -1,4 +1,5 @@
 .idea/
 migrations/
 venv/
+build/
 *.sqlite3
