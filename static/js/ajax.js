@@ -24,3 +24,17 @@ $('.alphabet').on('click', function () {
         }
     })
 });
+
+$('.game_url').on('click', function () {
+    $.ajax({
+        beforeSend: function () {
+            $('#sell_orders_table').html(loading);
+            $('#buy_orders_table').html(loading);
+        },
+        url: $(this).attr('data-url'),
+        success: function (result) {
+            $('#sell_orders_table').html(result.sell);
+            $('#buy_orders_table').html(result.buy);
+        }
+    })
+});
