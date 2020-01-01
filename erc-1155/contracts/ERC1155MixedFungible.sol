@@ -46,28 +46,39 @@ contract ERC1155MixedFungible is ERC1155 {
         return nfOwners[_id];
     }
 
+
+    function transferHelper(address _from, address _to, uint256 _id, uint256 _value) internal {
+            if (isNonFungible(_id)) {
+                require(nfOwners[_id] == _from);
+                nfOwners[_id] = _to;
+                // You could keep balance of NF type in base type id like so:
+                // uint256 baseType = getNonFungibleBaseType(_id);
+                // balances[baseType][_from] = balances[baseType][_from].sub(_value);
+                // balances[baseType][_to]   = balances[baseType][_to].add(_value);
+            } else {
+                balances[_id][_from] = balances[_id][_from].sub(_value);
+                balances[_id][_to] = balances[_id][_to].add(_value);
+            }
+            emit TransferSingle(msg.sender, _from, _to, _id, _value);
+    }
+
     // override
     function safeTransferFrom(address _from, address _to, uint256 _id, uint256 _value, bytes calldata _data) external {
 
         require(_to != address(0x0), "cannot send to zero address");
-        require(_from == msg.sender || operatorApproval[_from][msg.sender] == true, "Need operator approval for 3rd party transfers.");
-
-        if (isNonFungible(_id)) {
-            require(nfOwners[_id] == _from);
-            nfOwners[_id] = _to;
-            // You could keep balance of NF type in base type id like so:
-            // uint256 baseType = getNonFungibleBaseType(_id);
-            // balances[baseType][_from] = balances[baseType][_from].sub(_value);
-            // balances[baseType][_to]   = balances[baseType][_to].add(_value);
-        } else {
-            balances[_id][_from] = balances[_id][_from].sub(_value);
-            balances[_id][_to]   = balances[_id][_to].add(_value);
+        if (_from == msg.sender || operatorApproval[_from][msg.sender] == true) {
+            transferHelper(_from, _to, _id, _value);
+            if (_to.isContract()) {
+                _doSafeTransferAcceptanceCheck(msg.sender, _from, _to, _id, _value, _data);
+            }
         }
-
-        emit TransferSingle(msg.sender, _from, _to, _id, _value);
-
-        if (_to.isContract()) {
-            _doSafeTransferAcceptanceCheck(msg.sender, _from, _to, _id, _value, _data);
+        else {
+            require(allowances[_from][msg.sender][_id] >= _value, "allowance must be bigger than or equal to the value");
+            allowances[_from][msg.sender][_id] = allowances[_from][msg.sender][_id].sub(_value);
+            transferHelper(_from, _to, _id, _value);
+            if (_to.isContract()) {
+                _doSafeTransferAcceptanceCheck(msg.sender, _from, _to, _id, _value, _data);
+            }
         }
     }
 
