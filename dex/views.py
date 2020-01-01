@@ -1,10 +1,9 @@
 from django.http import JsonResponse
-from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 from dex.models import SellOrder, BuyOrder, Game, Token
-from dex.forms import SellOrderForm, BuyOrderForm
+from dex import forms
 
 
 class IndexView(generic.TemplateView):
@@ -22,7 +21,7 @@ class GameListView(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.GET["from"] == "list_orders":
-            context["url"] = reverse("dex:list_order")
+            context["url"] = reverse("dex:list_order_ajax")
         else:
             context["url"] = reverse("dex:profile")
 
@@ -34,17 +33,29 @@ class ListOrder(generic.TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["url"] = reverse('dex:list_order')
-
-        context['games'] = Game.objects.all()
-        context['sell'] = render_to_string('dex/partial/order.html', {
-            'orders': SellOrder.objects.all().order_by('-timestamp'), 'title': 'Satış Emirleri',
-            'button_title': 'Satış Emri Ekle',
-            'detail_url': reverse('dex:detail_sell'), 'delete_url': reverse('dex:delete_sell')})
-        context['buy'] = render_to_string('dex/partial/order.html', {
-            'orders': BuyOrder.objects.all().order_by('-timestamp'), 'title': 'Alış Emirleri',
-            'button_title': 'Alış Emri Ekle',
-            'detail_url': reverse('dex:detail_buy'), 'delete_url': reverse('dex:delete_buy')})
+        game = kwargs.get('game')
+        context["url"] = reverse('dex:list_order_ajax')
+        if game:
+            context['games'] = Game.objects.filter(name__istartswith=Game.objects.get(pk=game).name[:1])
+            context['game'] = game
+            context['sell'] = render_to_string('dex/partial/order.html', {
+                'orders': SellOrder.objects.filter(obj__game=game).order_by('-timestamp'), 'title': 'Satış Emirleri',
+                'button_title': 'Satış Emri Ekle',
+                'detail_url': reverse('dex:detail_sell'), 'delete_url': reverse('dex:delete_sell')})
+            context['buy'] = render_to_string('dex/partial/order.html', {
+                'orders': BuyOrder.objects.filter(obj__game=game).order_by('-timestamp'), 'title': 'Alış Emirleri',
+                'button_title': 'Alış Emri Ekle',
+                'detail_url': reverse('dex:detail_buy'), 'delete_url': reverse('dex:delete_buy')})
+        else:
+            context['games'] = Game.objects.all()
+            context['sell'] = render_to_string('dex/partial/order.html', {
+                'orders': SellOrder.objects.all().order_by('-timestamp'), 'title': 'Satış Emirleri',
+                'button_title': 'Satış Emri Ekle',
+                'detail_url': reverse('dex:detail_sell'), 'delete_url': reverse('dex:delete_sell')})
+            context['buy'] = render_to_string('dex/partial/order.html', {
+                'orders': BuyOrder.objects.all().order_by('-timestamp'), 'title': 'Alış Emirleri',
+                'button_title': 'Alış Emri Ekle',
+                'detail_url': reverse('dex:detail_buy'), 'delete_url': reverse('dex:delete_buy')})
 
         return context
 
@@ -69,7 +80,7 @@ class ListOrderAjax(generic.ListView):
 
 class NewSellOrder(generic.CreateView):
     template_name = 'dex/new_order.html'
-    form_class = SellOrderForm
+    form_class = forms.SellOrderForm
     model = SellOrder
 
     def get_context_data(self, **kwargs):
@@ -105,7 +116,7 @@ class DeleteSellOrder(generic.DeleteView):
 
 class NewBuyOrder(generic.CreateView):
     template_name = 'dex/new_order.html'
-    form_class = BuyOrderForm
+    form_class = forms.BuyOrderForm
     model = BuyOrder
 
     def get_context_data(self, **kwargs):
@@ -147,3 +158,12 @@ class ProfileView(generic.TemplateView):
         context['games'] = Game.objects.all()
         context['url'] = reverse('dex:profile')
         return context
+
+
+class GameCreateView(generic.CreateView):
+    template_name = 'dex/new_game.html'
+    form_class = forms.GameForm
+    model = Game
+
+    def get_success_url(self):
+        return reverse_lazy('dex:list_order', kwargs={'game':self.object.pk})

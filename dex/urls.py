@@ -7,7 +7,10 @@ urlpatterns = [
     path('', views.IndexView.as_view(), name="index"),
 
     path('exchange/', views.ListOrder.as_view(), {'game': None}, name="list_order"),
-    path('exchange/<game>', views.ListOrderAjax.as_view(), name="list_order"),
+    path('exchange/<game>', views.ListOrder.as_view(), name="list_order"),
+
+    path('exchange_ajax/', views.ListOrderAjax.as_view(), {'game': None}, name="list_order_ajax"),
+    path('exchange_ajax/<game>', views.ListOrderAjax.as_view(), name="list_order_ajax"),
 
     path('addsellorder/', views.NewSellOrder.as_view(), name="add_sell"),
 
@@ -29,4 +32,6 @@ urlpatterns = [
 
     path('me/', views.ProfileView.as_view(), {'pk': None}, name="profile"),
     path('me/<pk>', views.ProfileView.as_view(), name="profile"),
+
+    path('create_game/', views.GameCreateView.as_view(), name="create_game"),
 ]

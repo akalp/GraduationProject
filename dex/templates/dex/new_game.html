@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% block title %} Game Create {% endblock %}
+{% block content %}
+    <div class="container">
+        <h1>Game Creation</h1>
+        <form id="game_create_form" class="post-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            {% buttons %}
+                <button type="submit" class="save btn btn-primary">Create</button>
+            {% endbuttons %}
+        </form>
+    </div>
+{% endblock %}
