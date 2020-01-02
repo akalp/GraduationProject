@@ -34,4 +34,5 @@ urlpatterns = [
     path('me/<pk>', views.ProfileView.as_view(), name="profile"),
 
     path('create_game/', views.GameCreateView.as_view(), name="create_game"),
+    path('create_token/', views.TokenCreateView.as_view(), name="create_token"),
 ]

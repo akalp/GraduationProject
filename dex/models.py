@@ -3,7 +3,7 @@ from django.urls import reverse
 
 
 class Game(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     img = models.ImageField(upload_to='game', default='game/default_game.png', verbose_name="Image")
     desc = models.TextField(null=True, blank=True, verbose_name="Description")
 
@@ -11,11 +11,22 @@ class Game(models.Model):
         return self.name
 
 
+def photo_path(instance, filename):
+    import os
+    from django.template.defaultfilters import slugify
+    basefilename, file_extension = os.path.splitext(filename)
+    return "token/{}-{}{}".format(slugify(instance.game.name), slugify(instance.name), file_extension)
+
+
 class Token(models.Model):
     name = models.CharField(max_length=255)
-    img = models.ImageField(upload_to='token', default='token/default_token.jpg', verbose_name="Image")
+    img = models.ImageField(upload_to=photo_path, default='token/default_token.jpg', verbose_name="Image")
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     is_nf = models.BooleanField(default=True, verbose_name="Is Non-Fungible?")
+    id = models.BigIntegerField(primary_key=True)
+
+    class Meta:
+        unique_together = ('game', 'name',)
 
     def __str__(self):
         return self.game.name + ' - ' + self.name

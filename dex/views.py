@@ -96,9 +96,13 @@ class NewSellOrder(generic.CreateView):
         return JsonResponse(data)
 
     def form_valid(self, form):
-        form.save()
-        print("test")
-        return reverse_lazy('dex:list_order', kwargs={'game': self.object.obj.game.pk})
+        self.object = form.save()
+        data = {
+            'result': 'success',
+            'message': 'Form valid',
+            'url': reverse_lazy('dex:list_order', kwargs={'game': self.object.obj.game.pk})
+        }
+        return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -148,9 +152,13 @@ class NewBuyOrder(generic.CreateView):
         return JsonResponse(data)
 
     def form_valid(self, form):
-        form.save()
-        print("test")
-        return reverse_lazy('dex:list_order', kwargs={'game': self.object.obj.game.pk})
+        self.object = form.save()
+        data = {
+            'result': 'success',
+            'message': 'Form valid',
+            'url': reverse_lazy('dex:list_order', kwargs={'game': self.object.obj.game.pk})
+        }
+        return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -198,3 +206,12 @@ class GameCreateView(generic.CreateView):
 
     def get_success_url(self):
         return reverse_lazy('dex:list_order', kwargs={'game':self.object.pk})
+
+
+class TokenCreateView(generic.CreateView):
+    template_name = 'dex/new_token.html'
+    form_class = forms.TokenForm
+    model = Token
+
+    def get_success_url(self):
+        return reverse_lazy('dex:list_order')

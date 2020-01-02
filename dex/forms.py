@@ -22,6 +22,10 @@ class GameForm(forms.ModelForm):
 
 
 class TokenForm(forms.ModelForm):
+    quantity = forms.IntegerField(initial=1)
+    is_nf = forms.TypedChoiceField(label="Token Type", widget=forms.RadioSelect,
+                                   choices=((False, 'Fungible'), (True, 'Non-Fungible')), initial=True)
+    id = forms.IntegerField(widget=forms.HiddenInput)
     class Meta:
         model = Token
-        fields = ('game', 'name', 'img')
+        fields = ('id', 'is_nf', 'game', 'name', 'img')

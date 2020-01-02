@@ -57,11 +57,10 @@ $(document).on('submit', '#item_create_form', function (event) {
     event.preventDefault();
     $.ajax({
         beforeSend: function (xhr, settings) {
-            xhr.setRequestHeader("X-CSRFToken", $('input[name=csrfmiddlewaretoken]').val());
             $('#modal').html(modal_loading);
         },
         url: $(this).attr('action'),
-        data: JSON.stringify($(this).serializeArray()),
+        data: $('#item_create_form').serialize(),
         type : "POST",
         success: function (result) {
             if (result.result === 'error') {
@@ -70,6 +69,8 @@ $(document).on('submit', '#item_create_form', function (event) {
                 $(addr).val(web3.eth.defaultAccount);
                 $(addr).prop('readonly', true);
                 $('#modal').html(result);
+            }else{
+                window.location.replace(result.url)
             }
 
         },

@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% block title %} Game Create {% endblock %}
+{% block content %}
+    <div class="container">
+        <h1>Token Mint</h1>
+        <form id="token_create_form" class="post-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            {% buttons %}
+                <button type="submit" class="save btn btn-primary">Create</button>
+            {% endbuttons %}
+        </form>
+    </div>
+{% endblock %}
+{% block script %}
+    <script>
+        if ($('input[name="is_nf"]:checked').val() === "True") {
+            let q_div = $('#id_quantity');
+            q_div.prop("readonly", true);
+            q_div.parent().hide();
+        }
+        $('input[type="radio"][name="is_nf"]').change(function () {
+            let q_div = $('#id_quantity');
+            if (this.value === 'True') {
+                q_div.prop("readonly", true);
+                q_div.parent().hide();
+            } else {
+                q_div.prop("readonly", false);
+                q_div.parent().show();
+            }
+        });
+
+        function convertToSlug(Text) {
+            return Text
+                .toLowerCase()
+                .replace(/ /g, '-')
+                .replace(/[^\w-]+/g, '')
+                ;
+        }
+
+
+        $(document).on('submit', '#token_create_form', function (event) {
+            event.preventDefault();
+            let form = $(this);
+            let json = {};
+            json.name = form.find('#id_name').val();
+            json.game_id = form.find('#id_game').val();
+            json.game_name = form.find('#id_game').find('option:selected').text();
+
+            const ext = form.find('#id_img').val().split('.').pop();
+            json.image = window.location.origin + '/media/token/' + convertToSlug(json.game_name) + '-' + convertToSlug(json.name) + "." + ext;
+
+            let is_nf = $('input[name="is_nf"]:checked').val();
+            let id = 0;
+            erc1155.create(JSON.stringify(json), Boolean(is_nf), (err, tx) => {
+                console.log(tx);
+
+                let uri = erc1155.URI();
+                transferSingle.watch(function (err, res) {
+                    if(!err) {
+                        id = new web3.BigNumber(res.args._id)
+                        console.log(id)
+                        if (is_nf === "True") {
+                            console.log(123)
+                            erc1155.mintNonFungible(id, [web3.eth.defaultAccount], () => {
+                            });
+                        } else {
+                            let quantity = parseInt($('#id_quantity').val());
+                            erc1155.mintFungible(id, [web3.eth.defaultAccount], [quantity], () => {
+                            });
+                        }
+                        form.find('#id_id').val(id);
+                    }
+                });
+            });
+        });
+    </script>
+
+
+{% endblock %}
