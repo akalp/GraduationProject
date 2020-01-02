@@ -37,8 +37,17 @@ $(document).on('click', '.game_url', function () {
         },
         url: $(this).attr('data-url'),
         success: function (result) {
-            $('#sell_orders_table').html(result.sell);
-            $('#buy_orders_table').html(result.buy);
+            sell = jQuery.parseHTML(result.sell);
+            $(sell).find('div.assetname[data-wallet!=' + web3.eth.defaultAccount + ']').find('a').hide();
+            $('#sell_orders_table').html(sell);
+
+            buy = jQuery.parseHTML(result.buy);
+            $(buy).find('div.assetname[data-wallet!=' + web3.eth.defaultAccount + ']').find('a').hide();
+            $('#buy_orders_table').html(buy);
         }
     })
+});
+
+$(document).ready(function () {
+    $('div.assetname[data-wallet!=' + web3.eth.defaultAccount + ']').find('a').hide();
 });

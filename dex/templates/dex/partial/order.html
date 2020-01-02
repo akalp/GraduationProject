@@ -10,9 +10,9 @@
 </div>
 <div class="row justify-content-center">
     {% for order in orders %}
-        <a href="{{ detail_url }}{{ order.pk }}">
-            <div class="assetscontentitem border col-md-2 m-2">
-                <div style="width: 100%;">
+        <div class="assetscontentitem border col-md-2 m-2">
+            <div style="width: 100%;">
+                <a href="{{ detail_url }}{{ order.pk }}">
                     <div class="assetcontenimgdiv">
                         <div class="assetcontenimg">
                             <div style="width: 100%; height: 100%; position: relative;">
@@ -22,15 +22,15 @@
                             </div>
                         </div>
                     </div>
-                    <div class="assetname text-center">{{ order.obj.name }}
-                        <a type="button" class="btn-sm btn-danger text-white order-button"
-                           data-url="{{ delete_url }}{{ order.pk }}">Sil</a>
-                    </div>
-                    <div class="assetvaluediv">
-                        <div class="assetvalue text-center">{{ order.value }}&nbsp;ETH</div>
-                    </div>
+                </a>
+                <div data-wallet="{{ order.usr_addr }}" class="assetname text-center">{{ order.obj.name }}
+                    <a type="button" class="btn-sm btn-danger text-white order-button"
+                       data-url="{{ delete_url }}{{ order.pk }}">Sil</a>
+                </div>
+                <div class="assetvaluediv">
+                    <div class="assetvalue text-center">{{ order.value }}&nbsp;ETH</div>
                 </div>
             </div>
-        </a>
+        </div>
     {% endfor %}
 </div>
