@@ -11,9 +11,9 @@ $(document).on('click', '.order-button', function () {
             result = jQuery.parseHTML(result);
             addr = $(result).find('#id_usr_addr');
             $(addr).val(web3.eth.defaultAccount);
-            $(addr).parent().hide();
+            $(addr).prop('readonly', true);
             $('#modal').html(result);
-        }
+        },
     })
 });
 
@@ -47,6 +47,35 @@ $(document).on('click', '.game_url', function () {
         }
     })
 });
+
+
+$(document).on('click', 'button.save', function () {
+    $('#item_create_form').submit();
+});
+
+$(document).on('submit', '#item_create_form', function (event) {
+    event.preventDefault();
+    $.ajax({
+        beforeSend: function (xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name=csrfmiddlewaretoken]').val());
+            $('#modal').html(modal_loading);
+        },
+        url: $(this).attr('action'),
+        data: JSON.stringify($(this).serializeArray()),
+        type : "POST",
+        success: function (result) {
+            if (result.result === 'error') {
+                result = jQuery.parseHTML(result.html);
+                addr = $(result).find('#id_usr_addr');
+                $(addr).val(web3.eth.defaultAccount);
+                $(addr).prop('readonly', true);
+                $('#modal').html(result);
+            }
+
+        },
+    });
+});
+
 
 $(document).ready(function () {
     $('div.assetname[data-wallet!=' + web3.eth.defaultAccount + ']').find('a').hide();

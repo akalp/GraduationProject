@@ -169,13 +169,11 @@
             $('a.btn').click(function () {
                 const el = $($(this).attr('data-url'));
                 let offset;
-
                 if (el.height() < $(window).height()) {
                     offset = el.offset().top - (($(window).height() / 2) - (el.height() / 2));
                 } else {
                     offset = el.offset().top;
                 }
-                console.log(1);
                 $('html, body').animate({
                     scrollTop: offset
                 }, 1000)

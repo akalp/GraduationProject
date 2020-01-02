@@ -8,11 +8,11 @@
             </button>
         </div>
         <div class="modal-body">
-            <form id="item_create_form" class="post-form" method="post" enctype="multipart/form-data" action="{{url}}">
+            <form id="item_create_form" class="post-form" method="post" enctype="multipart/form-data" action="{{url}}?game={{ game }}">
                 {% csrf_token %}
                 {% bootstrap_form form %}
                 {% buttons %}
-                    <button type="submit" class="save btn btn-primary">Save</button>
+                    <button type="button" class="save btn btn-primary">Save</button>
                 {% endbuttons %}
             </form>
         </div>

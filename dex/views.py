@@ -40,11 +40,11 @@ class ListOrder(generic.TemplateView):
             context['game'] = game
             context['sell'] = render_to_string('dex/partial/order.html', {
                 'orders': SellOrder.objects.filter(obj__game=game).order_by('-timestamp'), 'title': 'Satış Emirleri',
-                'button_title': 'Satış Emri Ekle',
+                'button_title': 'Satış Emri Ekle', 'add_url': reverse('dex:add_sell'), 'game': game,
                 'detail_url': reverse('dex:detail_sell'), 'delete_url': reverse('dex:delete_sell')})
             context['buy'] = render_to_string('dex/partial/order.html', {
                 'orders': BuyOrder.objects.filter(obj__game=game).order_by('-timestamp'), 'title': 'Alış Emirleri',
-                'button_title': 'Alış Emri Ekle',
+                'button_title': 'Alış Emri Ekle', 'add_url': reverse('dex:add_buy'),  'game': game,
                 'detail_url': reverse('dex:detail_buy'), 'delete_url': reverse('dex:delete_buy')})
         else:
             context['games'] = Game.objects.all()
@@ -83,16 +83,32 @@ class NewSellOrder(generic.CreateView):
     form_class = forms.SellOrderForm
     model = SellOrder
 
+    def form_invalid(self, form):
+        form.fields['obj'].queryset = Token.objects.filter(
+            game__name=Game.objects.get(pk=self.request.GET['game']).name)
+        data = {
+            'result': 'error',
+            'message': 'Form invalid',
+            'html': render_to_string(self.template_name,
+                                     context={'title': 'Satış Emri Ekle', 'game': self.request.GET['game'],
+                                              'url': reverse('dex:add_sell'), 'form': form}, request=self.request)
+        }
+        return JsonResponse(data)
+
+    def form_valid(self, form):
+        form.save()
+        print("test")
+        return reverse_lazy('dex:list_order', kwargs={'game': self.object.obj.game.pk})
+
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        data['game'] = self.request.GET['game']
         data['form'].fields['obj'].queryset = Token.objects.filter(
             game__name=Game.objects.get(pk=self.request.GET['game']).name)
         data['title'] = "Satış Emri Ekle"
         data['url'] = reverse('dex:add_sell')
         return data
 
-    def get_success_url(self):
-        return reverse_lazy('dex:list_order', kwargs={'game': self.object.obj.game.pk})
 
 
 class SellDetail(generic.DetailView):
@@ -119,16 +135,31 @@ class NewBuyOrder(generic.CreateView):
     form_class = forms.BuyOrderForm
     model = BuyOrder
 
+    def form_invalid(self, form):
+        form.fields['obj'].queryset = Token.objects.filter(
+            game__name=Game.objects.get(pk=self.request.GET['game']).name)
+        data = {
+            'result': 'error',
+            'message': 'Form invalid',
+            'html': render_to_string(self.template_name,
+                                     context={'title': 'Alış Emri Ekle', 'game': self.request.GET['game'],
+                                              'url': reverse('dex:add_buy'), 'form': form}, request=self.request)
+        }
+        return JsonResponse(data)
+
+    def form_valid(self, form):
+        form.save()
+        print("test")
+        return reverse_lazy('dex:list_order', kwargs={'game': self.object.obj.game.pk})
+
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        data['game'] = self.request.GET['game']
         data['form'].fields['obj'].queryset = Token.objects.filter(
             game__name=Game.objects.get(pk=self.request.GET['game']).name)
         data['title'] = "Alış Emri Ekle"
         data['url'] = reverse('dex:add_buy')
         return data
-
-    def get_success_url(self):
-        return reverse_lazy('dex:list_order', kwargs={'game': self.object.obj.game.pk})
 
 
 class BuyDetail(generic.DetailView):
