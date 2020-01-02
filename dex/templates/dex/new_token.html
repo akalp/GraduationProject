@@ -39,7 +39,7 @@
                 ;
         }
 
-
+        let uri = erc1155.URI();
         $(document).on('submit', '#token_create_form', function (event) {
             event.preventDefault();
             let form = $(this);
@@ -53,27 +53,26 @@
 
             let is_nf = $('input[name="is_nf"]:checked').val();
             let id = 0;
-            erc1155.create(JSON.stringify(json), Boolean(is_nf), (err, tx) => {
+            erc1155.create(JSON.stringify(json), is_nf === 'True', (err, tx) => {
                 console.log(tx);
-
-                let uri = erc1155.URI();
-                transferSingle.watch(function (err, res) {
-                    if(!err) {
-                        id = new web3.BigNumber(res.args._id)
-                        console.log(id)
+                uri.watch(function (err, res) {
+                    if (!err) {
+                        id = res.args._id;
                         if (is_nf === "True") {
-                            console.log(123)
-                            erc1155.mintNonFungible(id, [web3.eth.defaultAccount], () => {
+                            erc1155.mintNonFungible(id.toString(), [web3.eth.defaultAccount], (err, res) => {
+                                console.log(res)
                             });
                         } else {
                             let quantity = parseInt($('#id_quantity').val());
-                            erc1155.mintFungible(id, [web3.eth.defaultAccount], [quantity], () => {
+                            erc1155.mintFungible(id, [web3.eth.defaultAccount], [quantity], (err, res) => {
+                                console.log(res)
                             });
                         }
                         form.find('#id_id').val(id);
                     }
                 });
             });
+
         });
     </script>
 
