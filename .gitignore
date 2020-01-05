@@ -3,3 +3,4 @@ migrations/
 venv/
 build/
 *.sqlite3
+media/

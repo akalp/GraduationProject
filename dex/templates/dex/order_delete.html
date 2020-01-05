@@ -8,7 +8,7 @@
             </button>
         </div>
         <div class="modal-body">
-            <form id="item_create_form" class="post-form" method="post" enctype="multipart/form-data" action="{{url}}">
+            <form id="item_delete_form" class="post-form" method="post" enctype="multipart/form-data" action="{{url}}">
                 {% csrf_token %}
                 <p>Are you sure you want to delete {{object.obj.name}} - {{ object.value }} ETH?</p>
                 {% buttons %}
