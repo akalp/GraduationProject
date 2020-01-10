@@ -15,6 +15,12 @@ contract ERC1155 is IERC1155, ERC165, CommonConstants
     // id => (owner => balance)
     mapping (uint256 => mapping(address => uint256)) internal balances;
 
+    //address => id array
+    mapping (address => uint256[]) ownedTokens;
+
+    // token id => (owner => index)
+    mapping (uint256 => mapping (address => uint256)) tokenToOwnerIndex;
+
     // owner => (operator => approved)
     mapping (address => mapping(address => bool)) internal operatorApproval;
     

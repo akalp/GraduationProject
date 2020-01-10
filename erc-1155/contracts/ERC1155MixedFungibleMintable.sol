@@ -55,7 +55,8 @@ contract ERC1155MixedFungibleMintable is ERC1155MixedFungible {
             uint256 id  = _type | index + i;
 
             nfOwners[id] = dst;
-
+            ownedTokens[dst].push(id);
+            tokenToOwnerIndex[id][dst] = ownedTokens[dst].length-1;
             // You could use base-type id to store NF type balances if you wish.
             // balances[_type][dst] = quantity.add(balances[_type][dst]);
 
@@ -75,10 +76,10 @@ contract ERC1155MixedFungibleMintable is ERC1155MixedFungible {
 
             address to = _to[i];
             uint256 quantity = _quantities[i];
-
+            ownedTokens[to].push(_id);
+            tokenToOwnerIndex[_id][to] = ownedTokens[to].length-1;
             // Grant the items to the caller
             balances[_id][to] = quantity.add(balances[_id][to]);
-
             // Emit the Transfer/Mint event.
             // the 0x0 source address implies a mint
             // It will also provide the circulating supply info.

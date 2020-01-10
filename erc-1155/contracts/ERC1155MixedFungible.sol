@@ -19,6 +19,7 @@ contract ERC1155MixedFungible is ERC1155 {
     // The top bit is a flag to tell if this is a NFI.
     uint256 constant TYPE_NF_BIT = 1 << 255;
 
+    // id => address
     mapping (uint256 => address) nfOwners;
 
     // Only to make code clearer. Should not be functions
@@ -45,19 +46,57 @@ contract ERC1155MixedFungible is ERC1155 {
     function ownerOf(uint256 _id) public view returns (address) {
         return nfOwners[_id];
     }
+    function ownedBy(address _owner) public view returns (uint256[] memory) {
+        return ownedTokens[_owner];
+    }
 
+    //function ownedFungibles(address _owner) public view returns (uint256[] memory, uint256[] memory) {}
 
     function transferHelper(address _from, address _to, uint256 _id, uint256 _value) internal {
             if (isNonFungible(_id)) {
                 require(nfOwners[_id] == _from);
                 nfOwners[_id] = _to;
+
+                ownedTokens[_to].push(_id);
+                tokenToOwnerIndex[_id][_to] = ownedTokens[_to].length-1;
+
+                uint256 lastTokenIndex = ownedTokens[_from].length-1;
+                uint256 tokenToRemoveIndex = tokenToOwnerIndex[_id][_from];
+
+                if (lastTokenIndex != tokenToRemoveIndex) {
+                    uint256 lastToken = ownedTokens[_from][lastTokenIndex];
+                    ownedTokens[_from][tokenToRemoveIndex] = lastToken;
+                    tokenToOwnerIndex[lastToken][_from] = tokenToRemoveIndex;
+                }
+
+                ownedTokens[_from].pop();
                 // You could keep balance of NF type in base type id like so:
                 // uint256 baseType = getNonFungibleBaseType(_id);
                 // balances[baseType][_from] = balances[baseType][_from].sub(_value);
                 // balances[baseType][_to]   = balances[baseType][_to].add(_value);
             } else {
+
+                if (balances[_id][_to] == 0) {
+                    ownedTokens[_to].push(_id);
+                    tokenToOwnerIndex[_id][_to] = ownedTokens[_to].length-1;
+                }
+
                 balances[_id][_from] = balances[_id][_from].sub(_value);
                 balances[_id][_to] = balances[_id][_to].add(_value);
+
+                if (balances[_id][_from] == 0) {
+
+                    uint256 lastTokenIndex = ownedTokens[_from].length-1;
+                    uint256 tokenToRemoveIndex = tokenToOwnerIndex[_id][_from];
+
+                    if (lastTokenIndex != tokenToRemoveIndex) {
+                        uint256 lastToken = ownedTokens[_from][lastTokenIndex];
+                        ownedTokens[_from][tokenToRemoveIndex] = lastToken;
+                        tokenToOwnerIndex[lastToken][_from] = tokenToRemoveIndex;
+                    }
+
+                    ownedTokens[_from].pop();
+                }
             }
             emit TransferSingle(msg.sender, _from, _to, _id, _value);
     }
