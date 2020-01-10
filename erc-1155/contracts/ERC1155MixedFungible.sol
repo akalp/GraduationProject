@@ -50,26 +50,33 @@ contract ERC1155MixedFungible is ERC1155 {
         return ownedTokens[_owner];
     }
 
-    //function ownedFungibles(address _owner) public view returns (uint256[] memory, uint256[] memory) {}
+
+    function addTokenToOwner(address _to, uint256 _id) internal {
+        ownedTokens[_to].push(_id);
+        tokenToOwnerIndex[_id][_to] = ownedTokens[_to].length-1;
+    }
+
+    function removeTokenFromOwner(address _from, uint256 _id) internal {
+        uint256 lastTokenIndex = ownedTokens[_from].length-1;
+        uint256 tokenToRemoveIndex = tokenToOwnerIndex[_id][_from];
+
+        if (lastTokenIndex != tokenToRemoveIndex) {
+            uint256 lastToken = ownedTokens[_from][lastTokenIndex];
+            ownedTokens[_from][tokenToRemoveIndex] = lastToken;
+            tokenToOwnerIndex[lastToken][_from] = tokenToRemoveIndex;
+        }
+
+        ownedTokens[_from].pop();
+    }
 
     function transferHelper(address _from, address _to, uint256 _id, uint256 _value) internal {
             if (isNonFungible(_id)) {
                 require(nfOwners[_id] == _from);
                 nfOwners[_id] = _to;
 
-                ownedTokens[_to].push(_id);
-                tokenToOwnerIndex[_id][_to] = ownedTokens[_to].length-1;
+                addTokenToOwner(_to, _id);
+                removeTokenFromOwner(_from, _id);
 
-                uint256 lastTokenIndex = ownedTokens[_from].length-1;
-                uint256 tokenToRemoveIndex = tokenToOwnerIndex[_id][_from];
-
-                if (lastTokenIndex != tokenToRemoveIndex) {
-                    uint256 lastToken = ownedTokens[_from][lastTokenIndex];
-                    ownedTokens[_from][tokenToRemoveIndex] = lastToken;
-                    tokenToOwnerIndex[lastToken][_from] = tokenToRemoveIndex;
-                }
-
-                ownedTokens[_from].pop();
                 // You could keep balance of NF type in base type id like so:
                 // uint256 baseType = getNonFungibleBaseType(_id);
                 // balances[baseType][_from] = balances[baseType][_from].sub(_value);
@@ -77,25 +84,14 @@ contract ERC1155MixedFungible is ERC1155 {
             } else {
 
                 if (balances[_id][_to] == 0) {
-                    ownedTokens[_to].push(_id);
-                    tokenToOwnerIndex[_id][_to] = ownedTokens[_to].length-1;
+                    addTokenToOwner(_to, _id);
                 }
 
                 balances[_id][_from] = balances[_id][_from].sub(_value);
                 balances[_id][_to] = balances[_id][_to].add(_value);
 
                 if (balances[_id][_from] == 0) {
-
-                    uint256 lastTokenIndex = ownedTokens[_from].length-1;
-                    uint256 tokenToRemoveIndex = tokenToOwnerIndex[_id][_from];
-
-                    if (lastTokenIndex != tokenToRemoveIndex) {
-                        uint256 lastToken = ownedTokens[_from][lastTokenIndex];
-                        ownedTokens[_from][tokenToRemoveIndex] = lastToken;
-                        tokenToOwnerIndex[lastToken][_from] = tokenToRemoveIndex;
-                    }
-
-                    ownedTokens[_from].pop();
+                    removeTokenFromOwner(_from, _id);
                 }
             }
             emit TransferSingle(msg.sender, _from, _to, _id, _value);
