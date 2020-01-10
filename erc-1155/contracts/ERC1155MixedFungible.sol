@@ -174,4 +174,20 @@ contract ERC1155MixedFungible is ERC1155 {
 
         return balances_;
     }
+
+        function balanceOfBatchSingleOwner(address _owner, uint256[] calldata _ids) external view returns (uint256[] memory) {
+
+        uint256[] memory balances_ = new uint256[](_ids.length);
+
+        for (uint256 i = 0; i < _ids.length; ++i) {
+            uint256 id = _ids[i];
+            if (isNonFungibleItem(id)) {
+                balances_[i] = nfOwners[id] == _owner ? 1 : 0;
+            } else {
+            	balances_[i] = balances[id][_owner];
+            }
+        }
+
+        return balances_;
+    }
 }
