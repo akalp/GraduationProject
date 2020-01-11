@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 from decouple import config, Csv
 
+from web3 import Web3, HTTPProvider, contract
+import json
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -127,3 +130,12 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+web3 = Web3(HTTPProvider('http://localhost:7545'))
+web3.eth.defaultAccount = web3.eth.accounts[0]
+
+abi = json.load(open(os.path.join(BASE_DIR, 'dex/contract_abi.json')))
+bytecode = json.load(open(os.path.join(BASE_DIR, 'dex/contract_bytecode.json')))['object']
+
+erc1155 = web3.eth.contract(address='0x05d923E34a9c2bE8AC645e14358065b572929167', abi=abi, bytecode=bytecode)

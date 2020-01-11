@@ -23,7 +23,8 @@ class Token(models.Model):
     img = models.ImageField(upload_to=photo_path, default='token/default_token.jpg', verbose_name="Image")
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     is_nf = models.BooleanField(default=True, verbose_name="Is Non-Fungible?")
-    id = models.BigIntegerField(primary_key=True)
+
+    contract_id = models.TextField(null=True)
 
     class Meta:
         unique_together = ('game', 'name',)

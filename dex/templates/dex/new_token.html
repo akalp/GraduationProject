@@ -15,6 +15,10 @@
 {% endblock %}
 {% block script %}
     <script>
+        addr = $('#token_create_form').find('#id_usr_addr');
+        $(addr).val(web3.eth.defaultAccount);
+        $(addr).prop('readonly', true);
+
         if ($('input[name="is_nf"]:checked').val() === "True") {
             let q_div = $('#id_quantity');
             q_div.prop("readonly", true);
@@ -30,51 +34,5 @@
                 q_div.parent().show();
             }
         });
-
-        function convertToSlug(Text) {
-            return Text
-                .toLowerCase()
-                .replace(/ /g, '-')
-                .replace(/[^\w-]+/g, '')
-                ;
-        }
-
-        let uri = erc1155.URI();
-        $(document).on('submit', '#token_create_form', function (event) {
-            event.preventDefault();
-            let form = $(this);
-            let json = {};
-            json.name = form.find('#id_name').val();
-            json.game_id = form.find('#id_game').val();
-            json.game_name = form.find('#id_game').find('option:selected').text();
-
-            const ext = form.find('#id_img').val().split('.').pop();
-            json.image = window.location.origin + '/media/token/' + convertToSlug(json.game_name) + '-' + convertToSlug(json.name) + "." + ext;
-
-            let is_nf = $('input[name="is_nf"]:checked').val();
-            let id = 0;
-            erc1155.create(JSON.stringify(json), is_nf === 'True', (err, tx) => {
-                console.log(tx);
-                uri.watch(function (err, res) {
-                    if (!err) {
-                        id = res.args._id;
-                        if (is_nf === "True") {
-                            erc1155.mintNonFungible(id.toString(), [web3.eth.defaultAccount], (err, res) => {
-                                console.log(res)
-                            });
-                        } else {
-                            let quantity = parseInt($('#id_quantity').val());
-                            erc1155.mintFungible(id, [web3.eth.defaultAccount], [quantity], (err, res) => {
-                                console.log(res)
-                            });
-                        }
-                        form.find('#id_id').val(id);
-                    }
-                });
-            });
-
-        });
     </script>
-
-
 {% endblock %}

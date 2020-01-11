@@ -1,9 +1,18 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy, reverse
 from django.views import generic
+from .utils import web3_utils
+
 from dex.models import SellOrder, BuyOrder, Game, Token
 from dex import forms
+
+from web3 import Web3, HTTPProvider
+import json
+import os
+
+from GraduationProject.settings import BASE_DIR, web3, erc1155
 
 
 class IndexView(generic.TemplateView):
@@ -213,5 +222,13 @@ class TokenCreateView(generic.CreateView):
     form_class = forms.TokenForm
     model = Token
 
-    def get_success_url(self):
-        return reverse_lazy('dex:list_order')
+    def form_valid(self, form):
+        data = form.cleaned_data
+        data['game'] = data['game'].id
+        id = web3_utils.create_mint(data)
+        if id:
+            form.instance.contract_id = id
+            form.save()
+            return redirect(reverse_lazy('dex:list_order'))
+        else:
+            return HttpResponse('BECEREMEDİM!')
