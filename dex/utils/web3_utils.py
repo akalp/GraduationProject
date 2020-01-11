@@ -42,3 +42,19 @@ def balanceOf(usr_addr, id):
         return None
 
 
+def getTokenIdsByAddr(usr_addr):
+    try:
+        ids = erc1155.functions.ownedBy(Web3.toChecksumAddress(usr_addr)).call()
+        return ids
+    except Exception as e:
+        print(e)
+        return None
+
+
+def balanceOfBatchSingleAddr(usr_addr, ids):
+    try:
+        ids = erc1155.functions.balanceOfBatchSingleOwner(usr_addr, ids).call()
+        return ids
+    except Exception as e:
+        print(e)
+        return None

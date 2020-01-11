@@ -115,9 +115,12 @@ class NewSellOrder(generic.CreateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+
+        ids = web3_utils.getTokenIdsByAddr(self.request.GET['usr_addr'])
+
         data['game'] = self.request.GET['game']
         data['form'].fields['obj'].queryset = Token.objects.filter(
-            game__name=Game.objects.get(pk=self.request.GET['game']).name)
+            game_id=self.request.GET['game'], contract_id__in=ids)
         data['title'] = "Satış Emri Ekle"
         data['url'] = reverse('dex:add_sell')
         return data

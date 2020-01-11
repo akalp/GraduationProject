@@ -7,6 +7,7 @@ $(document).on('click', '.order-button', function () {
             $('#modal').modal('show');
         },
         url: $(this).attr('data-url'),
+        data: {'usr_addr': web3.eth.defaultAccount},
         success: function (result) {
             result = jQuery.parseHTML(result);
             addr = $(result).find('#id_usr_addr');
