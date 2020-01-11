@@ -97,6 +97,7 @@ contract ERC1155MixedFungible is ERC1155 {
             emit TransferSingle(msg.sender, _from, _to, _id, _value);
     }
 
+
     // override
     function safeTransferFrom(address _from, address _to, uint256 _id, uint256 _value, bytes calldata _data) external {
 

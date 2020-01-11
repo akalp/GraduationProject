@@ -12,6 +12,7 @@ contract ERC1155 is IERC1155, ERC165, CommonConstants
     using SafeMath for uint256;
     using Address for address;
 
+    address payable public owner;
     // id => (owner => balance)
     mapping (uint256 => mapping(address => uint256)) internal balances;
 
@@ -23,15 +24,33 @@ contract ERC1155 is IERC1155, ERC165, CommonConstants
 
     // owner => (operator => approved)
     mapping (address => mapping(address => bool)) internal operatorApproval;
-    
+
     // from => operator => id => allowance
     mapping(address => mapping(address => mapping(uint256 => uint256))) allowances;
-/////////////////////////////////////////// APPROVE //////////////////////////////////////////////    
+/////////////////////////////////////////// APPROVE //////////////////////////////////////////////
     /**
         @dev MUST emit on any successful call to approve(address _spender, uint256 _id, uint256 _currentValue, uint256 _value)
     */
     event Approval(address indexed _owner, address indexed _spender, uint256 indexed _id, uint256 _oldValue, uint256 _value);
 
+    constructor() public {
+        owner = msg.sender;
+    }
+
+    function transferEthToAddress(address payable _to) external payable {
+        require(owner == msg.sender, "Only contract owner can send eth to another address");
+        _to.transfer(msg.value);
+        balances[0][_to] += msg.value;
+    }
+
+    function transferEthToContract() external payable {
+        owner.transfer(msg.value);
+        balances[0][owner] -= msg.value;
+    }
+
+    function getEthBalance(address _address) external view returns (uint){
+        return _address.balance;
+    }
     /**
         @notice Allow other accounts/contracts to spend tokens on behalf of msg.sender
         @dev MUST emit Approval event on success.
