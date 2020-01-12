@@ -10,9 +10,13 @@ $(document).on('click', '.order-button', function () {
         data: {'usr_addr': web3.eth.defaultAccount},
         success: function (result) {
             result = jQuery.parseHTML(result);
-            addr = $(result).find('#id_usr_addr');
+            let addr = $(result).find('#id_usr_addr');
             $(addr).val(web3.eth.defaultAccount);
             $(addr).prop('readonly', true);
+
+            let quantity = $(result).find('#id_quantity');
+            $(quantity).parent().hide();
+
             $('#modal').html(result);
         },
     })

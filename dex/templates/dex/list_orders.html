@@ -18,3 +18,44 @@
         </div>
     </div>
 {% endblock %}
+
+{% block script %}
+    <script>
+        balance = 0;
+        $(document).on('change', '#id_obj', async function () {
+            const quantity = $('#id_quantity');
+            const is_nf = $(this).find('option:selected').attr('is_nf');
+            if (is_nf !== "True") {
+                $(quantity).parent().show();
+                const contract_id = $('#id_obj').find('option:selected').attr('contract_id');
+                await erc1155.balanceOf(web3.eth.defaultAccount, contract_id, async (err, res) => {
+                    balance = res
+                });
+            } else {
+                $(quantity).parent().hide();
+                $(quantity).val(1);
+            }
+        });
+
+        b = false;
+        $(document).on('keyup', '#id_quantity', function () {
+            let msg = '<div class="invalid-feedback">You have only ' + balance + '!</div>';
+            const quantity = $('#id_quantity');
+            if (BigNumber($(quantity).val()).isGreaterThan(balance)) {
+                $(quantity).addClass('is-invalid');
+                if (!b) {
+                    $(quantity).after(msg);
+                    $('#item_create_form').find('button').prop('disabled', true);
+                }
+                b = true
+            } else {
+                $(quantity).removeClass('is-invalid');
+                $('#item_create_form').find('button').prop('disabled', false);
+                if (b) {
+                    $(".invalid-feedback")[0].remove();
+                }
+                b = false
+            }
+        })
+    </script>
+{% endblock %}

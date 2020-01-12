@@ -37,15 +37,20 @@ contract ERC1155 is IERC1155, ERC165, CommonConstants
         owner = msg.sender;
     }
 
-    function transferEthToAddress(address payable _to) external payable {
-        require(owner == msg.sender, "Only contract owner can send eth to another address");
-        _to.transfer(msg.value);
-        balances[0][_to] += msg.value;
+    function transferEthToContract(address _spender, uint256 _currentValue) external payable {
+        require(allowances[msg.sender][_spender][0] == _currentValue);
+
+        balances[0][msg.sender] += msg.value;
+        allowances[msg.sender][_spender][0] += msg.value;
+
+        emit Approval(msg.sender, _spender, 0, _currentValue, msg.value);
     }
 
-    function transferEthToContract() external payable {
-        owner.transfer(msg.value);
-        balances[0][owner] -= msg.value;
+    function withraw() public{
+        require(balances[0][msg.sender] > 0, "You do not have ether in contract!");
+        uint256 bal = balances[0][msg.sender];
+        balances[0][msg.sender] = 0;
+        msg.sender.transfer(bal);
     }
 
     function getEthBalance(address _address) external view returns (uint){

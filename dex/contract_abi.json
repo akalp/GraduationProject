@@ -751,12 +751,17 @@
 		"constant": false,
 		"inputs": [
 			{
-				"internalType": "address payable",
-				"name": "_to",
+				"internalType": "address",
+				"name": "_spender",
 				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_currentValue",
+				"type": "uint256"
 			}
 		],
-		"name": "transferEthToAddress",
+		"name": "transferEthToContract",
 		"outputs": [],
 		"payable": true,
 		"stateMutability": "payable",
@@ -765,10 +770,10 @@
 	{
 		"constant": false,
 		"inputs": [],
-		"name": "transferEthToContract",
+		"name": "withraw",
 		"outputs": [],
-		"payable": true,
-		"stateMutability": "payable",
+		"payable": false,
+		"stateMutability": "nonpayable",
 		"type": "function"
 	}
 ]

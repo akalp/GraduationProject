@@ -138,4 +138,4 @@ web3.eth.defaultAccount = web3.eth.accounts[0]
 abi = json.load(open(os.path.join(BASE_DIR, 'dex/contract_abi.json')))
 bytecode = json.load(open(os.path.join(BASE_DIR, 'dex/contract_bytecode.json')))['object']
 
-erc1155 = web3.eth.contract(address='0x05d923E34a9c2bE8AC645e14358065b572929167', abi=abi, bytecode=bytecode)
+erc1155 = web3.eth.contract(address='0x158A05FEB16Ef4F88303Dc0641C35c6D2caAdfdf', abi=abi, bytecode=bytecode)

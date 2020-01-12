@@ -38,6 +38,7 @@ class Order(models.Model):
     obj = models.ForeignKey(Token, on_delete=models.CASCADE, verbose_name="Token")
     value = models.CharField(max_length=255, verbose_name="ETH Value")
     timestamp = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
+    quantity = models.IntegerField(default=1)
 
 
 class SellOrder(Order):

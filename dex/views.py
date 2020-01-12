@@ -118,6 +118,7 @@ class NewSellOrder(generic.CreateView):
 
         ids = web3_utils.getTokenIdsByAddr(self.request.GET['usr_addr'])
 
+        data['from'] = "sell"
         data['game'] = self.request.GET['game']
         data['form'].fields['obj'].queryset = Token.objects.filter(
             game_id=self.request.GET['game'], contract_id__in=ids)
@@ -174,6 +175,7 @@ class NewBuyOrder(generic.CreateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        data['from'] = "buy"
         data['game'] = self.request.GET['game']
         data['form'].fields['obj'].queryset = Token.objects.filter(
             game__name=Game.objects.get(pk=self.request.GET['game']).name)
