@@ -1,6 +1,6 @@
-from MatchingEngine.db_connector import connectDB
+from MatchingEngine.db_connector import connect
 
-conn = connectDB()
+conn = connect()
 cur = conn.cursor()
 cur.execute("select column_name,data_type from information_schema.columns where table_name = 'dex_order';")
 row = cur.fetchall()

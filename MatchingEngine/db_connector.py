@@ -2,7 +2,7 @@ import psycopg2
 from decouple import config
 
 
-def connectDB():
+def connect():
     try:
         connection = psycopg2.connect(user=config('DB_USER'),
                                       password=config('DB_PASSWORD'),
