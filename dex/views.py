@@ -120,8 +120,8 @@ class NewSellOrder(generic.CreateView):
 
         data['from'] = "sell"
         data['game'] = self.request.GET['game']
-        data['form'].fields['obj'].queryset = Token.objects.filter(
-            game_id=self.request.GET['game'], contract_id__in=ids)
+        data['form'].fields['obj'].queryset = Token.objects.filter(contract_id__in=ids).filter(
+            game_id=self.request.GET['game'])
         data['title'] = "Satış Emri Ekle"
         data['url'] = reverse('dex:add_sell')
         return data
