@@ -38,23 +38,25 @@
         });
 
         b = false;
-        $(document).on('keyup', '#id_quantity', function () {
+        $(document).on('keyup', $('#item_create_form[data-table-from=sell] #id_quantity'), function () {
             let msg = '<div class="invalid-feedback">You have only ' + balance + '!</div>';
-            const quantity = $('#id_quantity');
-            if (BigNumber($(quantity).val()).isGreaterThan(balance)) {
-                $(quantity).addClass('is-invalid');
-                if (!b) {
-                    $(quantity).after(msg);
-                    $('#item_create_form').find('button').prop('disabled', true);
+            const quantity = $('#item_create_form[data-table-from=sell] #id_quantity');
+            if(typeof quantity !== "undefined") {
+                if (BigNumber($(quantity).val()).isGreaterThan(balance)) {
+                    $(quantity).addClass('is-invalid');
+                    if (!b) {
+                        $(quantity).after(msg);
+                        $('#item_create_form').find('button').prop('disabled', true);
+                    }
+                    b = true
+                } else {
+                    $(quantity).removeClass('is-invalid');
+                    $('#item_create_form').find('button').prop('disabled', false);
+                    if (b) {
+                        $(".invalid-feedback")[0].remove();
+                    }
+                    b = false
                 }
-                b = true
-            } else {
-                $(quantity).removeClass('is-invalid');
-                $('#item_create_form').find('button').prop('disabled', false);
-                if (b) {
-                    $(".invalid-feedback")[0].remove();
-                }
-                b = false
             }
         })
     </script>
