@@ -60,13 +60,43 @@ $(document).on('click', 'button.save', function () {
 
 $(document).on('submit', '#item_create_form', function (event) {
     event.preventDefault();
+    const contract_id = $('#id_obj').find('option:selected').attr('contract_id');
+    if ($('#item_create_form').attr('data-table-from') === "sell") {
+        erc1155.allowance(web3.eth.defaultAccount, "0x87767eca58362c54cef3dFDBf3Dcd4541bCb4dFC", contract_id, (err, res) => {
+            erc1155.approve("0x87767eca58362c54cef3dFDBf3Dcd4541bCb4dFC", $('#id_obj').find('option:selected').attr('contract_id'), res.toString(), $('#id_quantity').val(), (err, res) => {
+                if (err) {
+                    alert("You have to allow one of the spender in the list.");
+                } else {
+                    ajaxCall();
+                }
+            })
+        });
+    } else {
+        erc1155.allowance(web3.eth.defaultAccount, "0x87767eca58362c54cef3dFDBf3Dcd4541bCb4dFC", "0", (err, res) => {
+            console.log(res.toString())
+            if(!err) {
+                erc1155.transferEthToContract("0x87767eca58362c54cef3dFDBf3Dcd4541bCb4dFC", res.toString(), {'value': web3.toWei($('#id_value').val(), 'ether')}, (err, res) => {
+                    if (err) {
+                        alert("You have to allow one of the spender in the list.");
+                    } else {
+                        ajaxCall();
+                    }
+                })
+            }else{
+                alert(123)
+            }
+        });
+    }
+});
+
+function ajaxCall() {
     $.ajax({
         beforeSend: function (xhr, settings) {
             $('#modal').html(modal_loading);
         },
-        url: $(this).attr('action'),
+        url: $('#item_create_form').attr('action'),
         data: $('#item_create_form').serialize(),
-        type : "POST",
+        type: "POST",
         success: function (result) {
             if (result.result === 'error') {
                 result = jQuery.parseHTML(result.html);
@@ -74,13 +104,13 @@ $(document).on('submit', '#item_create_form', function (event) {
                 $(addr).val(web3.eth.defaultAccount);
                 $(addr).prop('readonly', true);
                 $('#modal').html(result);
-            }else{
+            } else {
                 window.location.replace(result.url)
             }
 
         },
     });
-});
+}
 
 
 $(document).ready(function () {
