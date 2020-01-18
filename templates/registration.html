@@ -1,0 +1,63 @@
+{% extends 'base.html' %} {% load static %}
+{% block title %}Register{% endblock %}
+
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/login-register.css' %}">
+    <style>
+        li {
+            list-style-type: none;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% for message in messages %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <div class="container">
+        <div class="wrapper fadeInDown">
+            {% if not user.is_authenticated %}
+                <div id="formContent">
+                    <div class="fadeIn first">
+                        <i id="icon" class="far fa-user-circle fa-10x" style="margin:0.2em"></i>
+                    </div>
+
+                    <form action="{% url 'dex:register' %}" method="post">
+                        {% csrf_token %}
+                        <input type="text" id="username" class="fadeIn second" name="username" placeholder="username">
+                        {% for error in user_form.username.errors %}
+                            <small class="form-text text-danger fadeIn second">{{ error }}</small>
+                        {% endfor %}
+                        <small class="form-text text-muted fadeIn second">{{ user_form.username.help_text }}</small>
+                        <input type="password" id="password1" class="fadeIn third" name="password1"
+                               placeholder="password">
+                        {% for error in user_form.password1.errors %}
+                            <small class="form-text text-danger fadeIn second">{{ error }}</small>
+                        {% endfor %}
+                        <small class="form-text text-muted fadeIn third">{{ user_form.password1.help_text }}</small>
+                        <input type="password" id="password2" class="fadeIn fourth" name="password2"
+                               placeholder="password again">
+                        {% for error in user_form.password2.errors %}
+                            <small class="form-text text-danger fadeIn second">{{ error }}</small>
+                        {% endfor %}
+                        <small class="form-text text-muted fadeIn third">{{ user_form.password2.help_text }}</small>
+                        <input type="submit" class="fadeIn fifth" value="Register" style="margin-top: 1em">
+                    </form>
+
+                    <div id="formFooter">
+                        <a class="underlineHover" href="{% url 'dex:login' %}">Already registered?</a>
+                    </div>
+
+                </div>
+            {% else %}
+                <p>You are already registered, {{ user }}. You can go <a href="{% url 'dex:list_order' %}">Exchange</a>
+                    or
+                    <a href="{% url 'dex:index' %}">Home Page</a></p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

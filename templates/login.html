@@ -1,0 +1,56 @@
+{% extends 'base.html' %} {% load static %}
+{% block title %}Log In{% endblock %}
+
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/login-register.css' %}">
+{% endblock %}
+
+{% block content %}
+    {% for message in messages %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <div class="container">
+        <div class="wrapper fadeInDown">
+            {% if not user.is_authenticated %}
+                <div id="formContent">
+                    <div class="fadeIn first">
+                        <i id="icon" class="far fa-user-circle fa-10x" style="margin:0.2em"></i>
+                    </div>
+                    {% if error %}
+                        <p class="form-text text-danger fadeIn second" style="margin:1em">Your username and
+                            password didn't match.
+                            Please try again.</p>
+                    {% endif %}
+
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <input type="text" id="username" class="fadeIn second" name="username" placeholder="username">
+                        {% for error in form.username.errors %}
+                            <small class="form-text text-danger fadeIn second">{{ error }}</small>
+                        {% endfor %}
+                        <input type="password" id="password" class="fadeIn third" name="password"
+                               placeholder="password">
+                        {% for error in form.password.errors %}
+                            <small class="form-text text-danger fadeIn second">{{ error }}</small>
+                        {% endfor %}
+
+                        <input type="submit" class="fadeIn fourth" value="Log In" style="margin-top: 1em">
+                    </form>
+
+                    <div id="formFooter">
+                        <a class="underlineHover" href="{% url 'dex:register' %}">Create Account</a>
+                    </div>
+
+                </div>
+            {% else %}
+                <p>You are already registered, {{ user }}. You can go <a href="{% url 'dex:list_order' %}">Exchange</a>
+                    or
+                    <a href="{% url 'dex:index' %}">Home Page</a></p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

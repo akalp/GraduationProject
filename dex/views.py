@@ -1,5 +1,10 @@
-from django.http import JsonResponse, HttpResponse
-from django.shortcuts import redirect
+from django.contrib import messages
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
+from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy, reverse
 from django.views import generic
@@ -207,27 +212,92 @@ class ProfileView(generic.TemplateView):
         return context
 
 
-class GameCreateView(generic.CreateView):
+"""
+    Authorization
+"""
+
+
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            next = request.GET.get('next')
+            return HttpResponseRedirect(next if next else reverse('dex:index')) ## FIXME redirect me to game developer page
+        else:
+            return render(request, 'login.html', context={'error': True})
+    else:
+        return render(request, 'login.html')
+
+
+@login_required
+def user_logout(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('dex:index'))
+
+
+def register(request):
+    registered = False
+
+    if request.method == 'POST':
+        user_form = UserCreationForm(data=request.POST)
+
+        if user_form.is_valid():
+            new_user = user_form.save()
+            registered = True
+        else:
+            print(user_form.errors)
+    else:
+        user_form = UserCreationForm()
+    return render(request, 'registration.html', {
+        'user_form': user_form,
+        'registered': registered
+    })
+
+
+"""
+    Game Developer
+"""
+
+
+class GameCreateView(LoginRequiredMixin, generic.CreateView):
+    login_url = '/login'
     template_name = 'dex/new_game.html'
     form_class = forms.GameForm
     model = Game
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse_lazy('dex:list_order', kwargs={'game':self.object.pk})
 
 
-class TokenCreateView(generic.CreateView):
+class TokenCreateView(LoginRequiredMixin, generic.CreateView):
+    login_url = '/login'
     template_name = 'dex/new_token.html'
     form_class = forms.TokenForm
     model = Token
 
-    def form_valid(self, form):
-        data = form.cleaned_data
-        data['game'] = data['game'].id
-        id = web3_utils.create_mint(data)
-        if id:
-            form.instance.contract_id = id
-            form.save()
-            return redirect(reverse_lazy('dex:list_order'))
-        else:
-            return HttpResponse('BECEREMEDİM!')
+    def get(self, request, *args, **kwargs):
+        form = self.form_class(request.user)
+        return render(request, self.template_name, context={'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.user, request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            data['game'] = data['game'].id
+            id = web3_utils.create_mint(data)
+            if id:
+                form.instance.contract_id = id
+                form.save()
+                return redirect(reverse_lazy('dex:list_order'))
+            else:
+                return HttpResponse('BECEREMEDİM!')
+        return render(request, self.template_name, context={'form': form})
+

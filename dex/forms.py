@@ -68,3 +68,7 @@ class TokenForm(forms.ModelForm):
     class Meta:
         model = Token
         fields = ('is_nf', 'game', 'name', 'img')
+
+    def __init__(self, user, *args, **kwargs):
+        super(TokenForm, self).__init__(*args, **kwargs)
+        self.fields['game'].queryset = Game.objects.filter(user=user)

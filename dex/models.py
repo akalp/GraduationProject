@@ -1,8 +1,10 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
 
 
 class Game(models.Model):
+    user = models.ForeignKey(to=get_user_model(), on_delete=models.CASCADE, related_name='games')
     name = models.CharField(max_length=255, unique=True)
     img = models.ImageField(upload_to='game', default='game/default_game.png', verbose_name="Image")
     desc = models.TextField(null=True, blank=True, verbose_name="Description")

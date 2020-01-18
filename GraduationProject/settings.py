@@ -131,6 +131,7 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+LOGIN_URL = '/login/'
 
 web3 = Web3(HTTPProvider(config('WEB3_HTTP_PROVIDER', default='http://localhost:7545')))
 web3.eth.defaultAccount = web3.eth.accounts[config('WEB3_DEFAULT_ACCOUNT_INDEX', default=0, cast=int)]
