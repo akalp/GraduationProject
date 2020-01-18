@@ -132,10 +132,10 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
-web3 = Web3(HTTPProvider('http://localhost:7545'))
-web3.eth.defaultAccount = web3.eth.accounts[0]
+web3 = Web3(HTTPProvider(config('WEB3_HTTP_PROVIDER', default='http://localhost:7545')))
+web3.eth.defaultAccount = web3.eth.accounts[config('WEB3_DEFAULT_ACCOUNT_INDEX', default=0, cast=int)]
 
 abi = json.load(open(os.path.join(BASE_DIR, 'dex/contract_abi.json')))
 bytecode = json.load(open(os.path.join(BASE_DIR, 'dex/contract_bytecode.json')))['object']
 
-erc1155 = web3.eth.contract(address='0x88E64f459f3c1C023b3673A82eb07978532FDf09', abi=abi, bytecode=bytecode)
+erc1155 = web3.eth.contract(address=config('WEB3_CONTRACT_ADDRESS'), abi=abi, bytecode=bytecode)

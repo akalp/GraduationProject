@@ -8,12 +8,6 @@ from .utils import web3_utils
 from dex.models import SellOrder, BuyOrder, Game, Token
 from dex import forms
 
-from web3 import Web3, HTTPProvider
-import json
-import os
-
-from GraduationProject.settings import BASE_DIR, web3, erc1155
-
 
 class IndexView(generic.TemplateView):
     template_name = 'index.html'

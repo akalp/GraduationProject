@@ -15,3 +15,5 @@ soupsieve==1.9.5
 sqlparse==0.3.0
 urllib3==1.25.7
 yarg==0.1.9
+psycopg2==2.8.4
+web3==5.4.0
