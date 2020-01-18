@@ -17,6 +17,11 @@ $(document).on('click', '.order-button', function () {
             let quantity = $(result).find('#id_quantity');
             $(quantity).parent().hide();
 
+            let del_form=$(result).find('#item_delete_form');
+            if(del_form.length !== 0){
+                del_form.prop('action', del_form.attr('action')+"?usr_addr="+web3.eth.defaultAccount)
+            }
+
             $('#modal').html(result);
         },
     })
@@ -72,7 +77,7 @@ $(document).on('submit', '#item_create_form', function (event) {
             })
         });
     } else {
-        erc1155.allowance(web3.eth.defaultAccount, "0x87767eca58362c54cef3dFDBf3Dcd4541bCb4dFC", "0", (err, res) => {
+        erc1155.allowance(web3.eth.defaultAccount, "0x87767eca58362c54cef3dFDBf3Dcd4541bCb4dFC", "1", (err, res) => {
             console.log(res.toString())
             if(!err) {
                 erc1155.transferEthToContract("0x87767eca58362c54cef3dFDBf3Dcd4541bCb4dFC", res.toString(), {'value': web3.toWei($('#id_value').val(), 'ether')}, (err, res) => {

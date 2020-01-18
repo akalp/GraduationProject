@@ -710,6 +710,26 @@
 		"constant": false,
 		"inputs": [
 			{
+				"internalType": "address payable",
+				"name": "_user",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_value",
+				"type": "uint256"
+			}
+		],
+		"name": "sendETHtoUser",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
 				"internalType": "address",
 				"name": "_operator",
 				"type": "address"
@@ -770,7 +790,7 @@
 	{
 		"constant": false,
 		"inputs": [],
-		"name": "withraw",
+		"name": "withdraw",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",

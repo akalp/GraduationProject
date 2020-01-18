@@ -58,3 +58,11 @@ def balanceOfBatchSingleAddr(usr_addr, ids):
     except Exception as e:
         print(e)
         return None
+
+
+def sendETHtoUser(usr_addr, val):
+    try:
+        return erc1155.functions.sendETHtoUser(Web3.toChecksumAddress(usr_addr), web3.toWei(val, 'ether')).transact()
+    except Exception as e:
+        print(e)
+        return None

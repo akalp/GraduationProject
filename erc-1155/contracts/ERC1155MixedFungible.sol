@@ -88,7 +88,12 @@ contract ERC1155MixedFungible is ERC1155 {
                 }
 
                 balances[_id][_from] = balances[_id][_from].sub(_value);
+                if(_id==1){
+                     balances[0][_to] = balances[0][_to].add(_value);
+                }
+                else{
                 balances[_id][_to] = balances[_id][_to].add(_value);
+                }
 
                 if (balances[_id][_from] == 0) {
                     removeTokenFromOwner(_from, _id);

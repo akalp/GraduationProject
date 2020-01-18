@@ -116,7 +116,6 @@ class NewSellOrder(generic.CreateView):
         data = super().get_context_data(**kwargs)
 
         ids = web3_utils.getTokenIdsByAddr(self.request.GET['usr_addr'])
-
         data['from'] = "sell"
         data['game'] = self.request.GET['game']
         data['form'].fields['obj'].queryset = Token.objects.filter(contract_id__in=ids).filter(
@@ -192,6 +191,10 @@ class BuyDetail(generic.DetailView):
 class DeleteBuyOrder(generic.DeleteView):
     model = BuyOrder
     template_name = 'dex/order_delete.html'
+
+    def post(self, request, *args, **kwargs):
+        web3_utils.sendETHtoUser(request.GET.get('usr_addr'), self.get_object().value)
+        return super().post(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
