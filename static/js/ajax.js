@@ -79,6 +79,7 @@ $(document).on('submit', '#item_create_form', function (event) {
                     if (err) {
                         alert("You have to allow one of the spender in the list.");
                     } else {
+                        erc1155.balanceOf(web3.eth.defaultAccount, 0, (err,res)=>{$('#ETH').text(web3.fromWei(res))})
                         ajaxCall();
                     }
                 })
