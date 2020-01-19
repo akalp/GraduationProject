@@ -54,6 +54,8 @@ $(document).on('click', '.game_url', function () {
             buy = jQuery.parseHTML(result.buy);
             $(buy).find('div.assetname[data-wallet!=' + web3.eth.defaultAccount + ']').find('a').hide();
             $('#buy_orders_table').html(buy);
+
+            userChange();
         }
     })
 });
