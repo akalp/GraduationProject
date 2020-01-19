@@ -13,7 +13,8 @@
                 {% csrf_token %}
                 {% bootstrap_form form %}
                 {% buttons %}
-                    <button type="button" class="save btn btn-primary">Save</button>
+                    <button type="button" class="save btn btn-success">Add Order</button>
+                    <button type="button" class="btn btn-secondary" style="float: right" data-dismiss="modal" aria-label="Close">Close</button>
                 {% endbuttons %}
             </form>
         </div>
