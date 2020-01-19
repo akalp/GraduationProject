@@ -2,7 +2,7 @@
 <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Sil</h5>
+            <h5 class="modal-title" id="exampleModalLongTitle">Remove Order - {{object.obj.name}} ({{ object.obj.game }})</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -12,7 +12,8 @@
                 {% csrf_token %}
                 <p>Are you sure you want to delete {{object.obj.name}} - {{ object.value }} ETH?</p>
                 {% buttons %}
-                    <button type="submit" value="Confirm" class="btn btn-danger">Sil</button>
+                    <button type="submit" value="Confirm" class="btn btn-danger">I'm sure!</button>
+                    <button type="button" class="btn btn-secondary" style="float: right" data-dismiss="modal" aria-label="Close">No, I'm not!</button>
                 {% endbuttons %}
             </form>
         </div>
