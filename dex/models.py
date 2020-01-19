@@ -36,7 +36,7 @@ class Token(models.Model):
 
 
 class Order(models.Model):
-    usr_addr = models.CharField(max_length=42, verbose_name="User Address")
+    usr_addr = models.CharField(max_length=42, verbose_name="User ETH Address")
     obj = models.ForeignKey(Token, on_delete=models.CASCADE, verbose_name="Token")
     value = models.CharField(max_length=255, verbose_name="ETH Value")
     timestamp = models.DateTimeField(auto_now_add=True, verbose_name="Created at")

@@ -47,22 +47,22 @@ class ListOrder(generic.TemplateView):
             context['games'] = Game.objects.filter(name__istartswith=Game.objects.get(pk=game).name[:1])
             context['game'] = game
             context['sell'] = render_to_string('dex/partial/order.html', {
-                'orders': SellOrder.objects.filter(obj__game=game).order_by('-timestamp'), 'title': 'Satış Emirleri',
-                'button_title': 'Satış Emri Ekle', 'add_url': reverse('dex:add_sell'), 'game': game,
+                'orders': SellOrder.objects.filter(obj__game=game).order_by('-timestamp'), 'title': 'Sales Orders',
+                'button_title': 'Add Sales Order', 'add_url': reverse('dex:add_sell'), 'game': game,
                 'detail_url': reverse('dex:detail_sell'), 'delete_url': reverse('dex:delete_sell')})
             context['buy'] = render_to_string('dex/partial/order.html', {
-                'orders': BuyOrder.objects.filter(obj__game=game).order_by('-timestamp'), 'title': 'Alış Emirleri',
-                'button_title': 'Alış Emri Ekle', 'add_url': reverse('dex:add_buy'),  'game': game,
+                'orders': BuyOrder.objects.filter(obj__game=game).order_by('-timestamp'), 'title': 'Buy Orders',
+                'button_title': 'Add Buy Order', 'add_url': reverse('dex:add_buy'),  'game': game,
                 'detail_url': reverse('dex:detail_buy'), 'delete_url': reverse('dex:delete_buy')})
         else:
             context['games'] = Game.objects.all()
             context['sell'] = render_to_string('dex/partial/order.html', {
-                'orders': SellOrder.objects.all().order_by('-timestamp'), 'title': 'Satış Emirleri',
-                'button_title': 'Satış Emri Ekle',
+                'orders': SellOrder.objects.all().order_by('-timestamp'), 'title': 'Sales Orders',
+                'button_title': 'Add Sales Order',
                 'detail_url': reverse('dex:detail_sell'), 'delete_url': reverse('dex:delete_sell')})
             context['buy'] = render_to_string('dex/partial/order.html', {
-                'orders': BuyOrder.objects.all().order_by('-timestamp'), 'title': 'Alış Emirleri',
-                'button_title': 'Alış Emri Ekle',
+                'orders': BuyOrder.objects.all().order_by('-timestamp'), 'title': 'Buy Orders',
+                'button_title': 'Add Buy Order',
                 'detail_url': reverse('dex:detail_buy'), 'delete_url': reverse('dex:delete_buy')})
 
         return context
@@ -75,12 +75,12 @@ class ListOrderAjax(generic.ListView):
         context = {}
         game = kwargs.get('game')
         context['sell'] = render_to_string('dex/partial/order.html', {
-            'orders': SellOrder.objects.filter(obj__game=game).order_by('-timestamp'), 'title': 'Satış Emirleri',
-            'button_title': 'Satış Emri Ekle', 'add_url': reverse('dex:add_sell'), 'game': game,
+            'orders': SellOrder.objects.filter(obj__game=game).order_by('-timestamp'), 'title': 'Sales Orders',
+            'button_title': 'Add Sales Order', 'add_url': reverse('dex:add_sell'), 'game': game,
             'detail_url': reverse('dex:detail_sell'), 'delete_url': reverse('dex:delete_sell')})
         context['buy'] = render_to_string('dex/partial/order.html', {
-            'orders': BuyOrder.objects.filter(obj__game=game).order_by('-timestamp'), 'title': 'Alış Emirleri',
-            'button_title': 'Alış Emri Ekle', 'add_url': reverse('dex:add_buy'), 'game': game,
+            'orders': BuyOrder.objects.filter(obj__game=game).order_by('-timestamp'), 'title': 'Buy Orders',
+            'button_title': 'Add Buy Order', 'add_url': reverse('dex:add_buy'), 'game': game,
             'detail_url': reverse('dex:detail_buy'), 'delete_url': reverse('dex:delete_buy')})
 
         return JsonResponse(context)
@@ -98,7 +98,7 @@ class NewSellOrder(generic.CreateView):
             'result': 'error',
             'message': 'Form invalid',
             'html': render_to_string(self.template_name,
-                                     context={'title': 'Satış Emri Ekle', 'game': self.request.GET['game'],
+                                     context={'title': 'Add Sales Order', 'game': self.request.GET['game'],
                                               'url': reverse('dex:add_sell'), 'form': form}, request=self.request)
         }
         return JsonResponse(data)
@@ -120,7 +120,7 @@ class NewSellOrder(generic.CreateView):
         data['game'] = self.request.GET['game']
         data['form'].fields['obj'].queryset = Token.objects.filter(contract_id__in=ids).filter(
             game_id=self.request.GET['game'])
-        data['title'] = "Satış Emri Ekle"
+        data['title'] = "Add Sales Order"
         data['url'] = reverse('dex:add_sell')
         return data
 
@@ -157,7 +157,7 @@ class NewBuyOrder(generic.CreateView):
             'result': 'error',
             'message': 'Form invalid',
             'html': render_to_string(self.template_name,
-                                     context={'title': 'Alış Emri Ekle', 'game': self.request.GET['game'],
+                                     context={'title': 'Add Buy Order', 'game': self.request.GET['game'],
                                               'url': reverse('dex:add_buy'), 'form': form}, request=self.request)
         }
         return JsonResponse(data)
@@ -177,7 +177,7 @@ class NewBuyOrder(generic.CreateView):
         data['game'] = self.request.GET['game']
         data['form'].fields['obj'].queryset = Token.objects.filter(
             game__name=Game.objects.get(pk=self.request.GET['game']).name)
-        data['title'] = "Alış Emri Ekle"
+        data['title'] = "Add Buy Order"
         data['url'] = reverse('dex:add_buy')
         return data
 
@@ -301,6 +301,6 @@ class TokenCreateView(LoginRequiredMixin, generic.CreateView):
                 form.save()
                 return redirect(reverse_lazy('dex:list_order'))
             else:
-                return HttpResponse('BECEREMEDİM!')
+                return HttpResponse('An error occurred when creating token. Please get contact with administrator.')
         return render(request, self.template_name, context={'form': form})
 
