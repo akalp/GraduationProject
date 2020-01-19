@@ -63,7 +63,7 @@ class TokenForm(forms.ModelForm):
     quantity = forms.IntegerField(initial=1)
     is_nf = forms.TypedChoiceField(label="Token Type", widget=forms.RadioSelect,
                                    choices=((False, 'Fungible'), (True, 'Non-Fungible')), initial=True)
-    usr_addr = forms.CharField()
+    usr_addr = forms.CharField(label="User ETH Address")
 
     class Meta:
         model = Token
