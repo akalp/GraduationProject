@@ -31,7 +31,7 @@ class GameListView(generic.ListView):
         if self.request.GET["from"] == "list_orders":
             context["url"] = reverse("dex:list_order_ajax")
         else:
-            context["url"] = reverse("dex:profile")
+            context["url"] = reverse("dex:profile_ajax")
 
         return context
 
@@ -52,7 +52,7 @@ class ListOrder(generic.TemplateView):
                 'detail_url': reverse('dex:detail_sell'), 'delete_url': reverse('dex:delete_sell')})
             context['buy'] = render_to_string('dex/partial/order.html', {
                 'orders': BuyOrder.objects.filter(obj__game=game).order_by('-timestamp'), 'title': 'Buy Orders',
-                'button_title': 'Add Buy Order', 'add_url': reverse('dex:add_buy'),  'game': game,
+                'button_title': 'Add Buy Order', 'add_url': reverse('dex:add_buy'), 'game': game,
                 'detail_url': reverse('dex:detail_buy'), 'delete_url': reverse('dex:delete_buy')})
         else:
             context['games'] = Game.objects.all()
@@ -123,7 +123,6 @@ class NewSellOrder(generic.CreateView):
         data['title'] = "Add Sales Order"
         data['url'] = reverse('dex:add_sell')
         return data
-
 
 
 class SellDetail(generic.DetailView):
@@ -210,9 +209,45 @@ class ProfileView(generic.TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['games'] = Game.objects.all()
-        context['url'] = reverse('dex:profile')
+        context["url"] = reverse('dex:profile_ajax')
+        game = kwargs.get('game')
+        usr_addr = self.request.GET.get('usr_addr')
+        ids = web3_utils.getTokenIdsByAddr(usr_addr)
+        vals = web3_utils.balanceOfBatchSingleAddr(usr_addr, ids)
+        zipped = dict(zip(map(str, ids), vals))
+        if game:
+            context['games'] = Game.objects.filter(name__istartswith=Game.objects.get(pk=game).name[:1])
+            context['inventory'] = render_to_string('dex/partial/object.html', {
+                'objects': {object: zipped[object.contract_id] for object in
+                            Token.objects.filter(game=game, contract_id__in=ids)},
+                'game': Game.objects.get(pk=game),
+            })
+        else:
+            context['games'] = Game.objects.all()
+            context['inventory'] = render_to_string('dex/partial/object.html', {
+                'objects': {object: zipped[object.contract_id] for object in
+                            Token.objects.filter(contract_id__in=ids).order_by('-game')},
+            })
+
         return context
+
+
+class ProfileViewAjax(generic.ListView):
+    model = None
+
+    def get(self, request, *args, **kwargs):
+        context = {}
+        game = kwargs.get('game')
+        usr_addr = self.request.GET.get('usr_addr')
+        ids = web3_utils.getTokenIdsByAddr(usr_addr)
+        vals = web3_utils.balanceOfBatchSingleAddr(usr_addr, ids)
+        zipped = dict(zip(map(str, ids), vals))
+        context['inventory'] = render_to_string('dex/partial/object.html', {
+            'objects': {object: zipped[object.contract_id] for object in
+                        Token.objects.filter(game=game, contract_id__in=ids)},
+            'game': Game.objects.get(pk=game),
+        })
+        return JsonResponse(context)
 
 
 """
@@ -229,7 +264,8 @@ def user_login(request):
         if user is not None:
             login(request, user)
             next = request.GET.get('next')
-            return HttpResponseRedirect(next if next else reverse('dex:index')) ## FIXME redirect me to game developer page
+            return HttpResponseRedirect(
+                next if next else reverse('dex:index'))  ## FIXME redirect me to game developer page
         else:
             return render(request, 'login.html', context={'error': True})
     else:
@@ -277,7 +313,7 @@ class GameCreateView(LoginRequiredMixin, generic.CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('dex:list_order', kwargs={'game':self.object.pk})
+        return reverse_lazy('dex:list_order', kwargs={'game': self.object.pk})
 
 
 class TokenCreateView(LoginRequiredMixin, generic.CreateView):
@@ -303,4 +339,3 @@ class TokenCreateView(LoginRequiredMixin, generic.CreateView):
             else:
                 return HttpResponse('An error occurred when creating token. Please get contact with administrator.')
         return render(request, self.template_name, context={'form': form})
-

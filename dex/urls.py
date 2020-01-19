@@ -34,8 +34,11 @@ urlpatterns = [
 
     path('gamelist/<c>', views.GameListView.as_view(), name="game_list"),
 
-    path('me/', views.ProfileView.as_view(), {'pk': None}, name="profile"),
-    path('me/<pk>', views.ProfileView.as_view(), name="profile"),
+    path('me/', views.ProfileView.as_view(), {'game': None}, name="profile"),
+    path('me/<game>', views.ProfileView.as_view(), name="profile"),
+
+    path('me_ajax/', views.ProfileViewAjax.as_view(), {'game': None}, name="profile_ajax"),
+    path('me_ajax/<game>', views.ProfileViewAjax.as_view(), name="profile_ajax"),
 
     path('create_game/', views.GameCreateView.as_view(), name="create_game"),
     path('create_token/', views.TokenCreateView.as_view(), name="create_token"),

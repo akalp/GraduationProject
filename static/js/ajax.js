@@ -34,6 +34,10 @@ $(document).on('click', '.alphabet', function () {
         },
         url: $(this).attr('data-url'),
         success: function (result) {
+            result = jQuery.parseHTML(result);
+            $(result).find('a[data-url*="/me"]').map(function () {
+                $(this).attr('data-url', $(this).attr('data-url')+'?usr_addr='+web3.eth.defaultAccount)
+            });
             $('#game-list').html(result);
         }
     })
@@ -44,6 +48,7 @@ $(document).on('click', '.game_url', function () {
         beforeSend: function () {
             $('#sell_orders_table').html(loading);
             $('#buy_orders_table').html(loading);
+            $('#inventory').html(loading);
         },
         url: $(this).attr('data-url'),
         success: function (result) {
@@ -54,6 +59,8 @@ $(document).on('click', '.game_url', function () {
             buy = jQuery.parseHTML(result.buy);
             $(buy).find('div.assetname[data-wallet!=' + web3.eth.defaultAccount + ']').find('a').hide();
             $('#buy_orders_table').html(buy);
+
+            $('#inventory').html(jQuery.parseHTML(result.inventory));
 
             userChange();
         }
@@ -123,4 +130,12 @@ function ajaxCall() {
 
 $(document).ready(function () {
     $('div.assetname[data-wallet!=' + web3.eth.defaultAccount + ']').find('a').hide();
+    $('a[href*="/me"]').map(function () {
+        if(!$(this['href*="?"']))
+            $(this).prop('href', $(this).attr('href')+'?usr_addr='+web3.eth.defaultAccount)
+    });
+    $('a[data-url*="/me"]').map(function () {
+        if(!$(this['data-url*="?"']))
+            $(this).attr('data-url', $(this).attr('data-url')+'?usr_addr='+web3.eth.defaultAccount)
+    });
 });

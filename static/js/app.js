@@ -37,6 +37,15 @@ function userChange(){
   oldParent.css("background", "");
   newParent.addClass("border-success");
   newParent.css("background", "rgba(0,255,0,0.1)");
+
+  $('a[href*="/me"]').map(function () {
+      const a =$(this).attr('href').split('?')[0]
+        $(this).prop('href', a+'?usr_addr='+web3.eth.defaultAccount)
+    });
+    $('a[data-url*="/me"]').map(function () {
+      const a = $(this).attr('data-url').split('?')[0]
+        $(this).attr('data-url', a+'?usr_addr='+web3.eth.defaultAccount)
+    });
 }
 
 $(document).on('click','#withdraw',function () {
