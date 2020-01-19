@@ -24,8 +24,8 @@
                     </div>
                 </a>
                 <div data-wallet="{{ order.usr_addr }}" class="assetname text-center">{{ order.obj.name }}
-                    <a type="button" class="btn-sm btn-danger text-white order-button"
-                       data-url="{{ delete_url }}{{ order.pk }}">Sil</a>
+                    <a type="button" title="Remove" class="text-danger order-button"
+                       data-url="{{ delete_url }}{{ order.pk }}"><i class="fas fa-times"></i></a>
                 </div>
                 <div class="assetvaluediv">
                     <div class="assetvalue text-center">{{ order.value }}&nbsp;ETH</div>
