@@ -46,10 +46,9 @@ contract ERC1155 is IERC1155, ERC165, CommonConstants
         emit Approval(msg.sender, _spender, 1, _currentValue, msg.value);
     }
 
-    function sendETHtoUser(address payable _user) external{
-        uint256 bal = balances[1][msg.sender];
-        balances[1][msg.sender] = 0;
-        _user.transfer(bal);
+    function sendETHtoUser(address payable _user, uint256 _value) external{
+        balances[1][_user] = balances[1][_user].sub(_value);
+        _user.transfer(_value);
     }
 
     function withdraw() public{
