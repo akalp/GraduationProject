@@ -120,7 +120,7 @@ function ajaxCall() {
                 $(addr).prop('readonly', true);
                 $('#modal').html(result);
             } else {
-                window.location.replace(result.url)
+                window.location.href = result.url
             }
 
         },
