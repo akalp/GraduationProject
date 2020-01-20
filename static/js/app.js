@@ -57,3 +57,5 @@ $(document).on('click','#withdraw',function () {
     }
   })
 });
+
+const operatorAddress = "0x87767eca58362c54cef3dFDBf3Dcd4541bCb4dFC";
