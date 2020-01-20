@@ -66,3 +66,14 @@ def sendETHtoUser(usr_addr, val):
     except Exception as e:
         print(e)
         return None
+
+
+def safeTransferFrom(from_usr_addr, to_usr_addr, token_id, quantity, data="0x01"):
+    print()
+    try:
+        if token_id == "1":
+            quantity = Web3.toWei(quantity, "ether")
+        return erc1155.functions.safeTransferFrom(Web3.toChecksumAddress(from_usr_addr), Web3.toChecksumAddress(to_usr_addr), int(token_id), int(quantity), data).transact()
+    except Exception as e:
+        print(e)
+        return None
