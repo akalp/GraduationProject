@@ -27,6 +27,11 @@
                     <a type="button" title="Remove" class="text-danger order-button"
                        data-url="{{ delete_url }}{{ order.pk }}"><i class="fas fa-times"></i></a>
                 </div>
+                {% if not order.obj.is_nf %}
+                <div class="assetvaluediv">
+                    <div class="assetvalue text-center">{{ order.quantity }}&nbsp;piece(s)</div>
+                </div>
+                {% endif %}
                 <div class="assetvaluediv">
                     <div class="assetvalue text-center">{{ order.value }}&nbsp;ETH</div>
                 </div>
