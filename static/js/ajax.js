@@ -87,7 +87,6 @@ $(document).on('submit', '#item_create_form', function (event) {
         });
     } else {
         erc1155.allowance(web3.eth.defaultAccount, operatorAddress, "1", (err, res) => {
-            console.log(res.toString())
             if(!err) {
                 erc1155.transferEthToContract(operatorAddress, res.toString(), {'value': web3.toWei($('#id_value').val(), 'ether')}, (err, res) => {
                     if (err) {

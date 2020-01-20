@@ -17,8 +17,7 @@ class CustomSelect(Select):
         if value != "":
             is_nf = Token.objects.get(pk=value).is_nf
             option_attrs['is_nf'] = str(is_nf)
-            if not is_nf:
-                option_attrs['contract_id'] = str(Token.objects.get(pk=value).contract_id)
+            option_attrs['contract_id'] = str(Token.objects.get(pk=value).contract_id)
         else:
             option_attrs['is_nf'] = 'True'
         return {

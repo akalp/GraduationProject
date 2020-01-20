@@ -41,7 +41,8 @@
         $(document).on('keyup', $('#item_create_form[data-table-from=sell] #id_quantity'), function () {
             let msg = '<div class="invalid-feedback">You have only ' + balance + '!</div>';
             const quantity = $('#item_create_form[data-table-from=sell] #id_quantity');
-            if(typeof quantity !== "undefined") {
+            const is_nf = $('option:selected').attr('is_nf');
+            if(is_nf === "False") {
                 if (BigNumber($(quantity).val()).isGreaterThan(balance)) {
                     $(quantity).addClass('is-invalid');
                     if (!b) {
