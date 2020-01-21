@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static bootstrap4 %}
+{% block title %} Developer {% endblock %}
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/crousel.css' %}">
+{% endblock %}
+{% block content %}
+    <div class="carousel-inner">
+    <div class="carousel-item active">
+                <img src="{% static 'image/index/h1.png' %}" class="bd-placeholder-img" width="100%" height="100%" style="filter: brightness(50%)">
+                <div class="container">
+                    <div class="carousel-caption text-left">
+                        <h1>Integrate Blockchain to the Game</h1>
+                        <p>Easily integrate blockchain to your game with provided tools. You can create in-game assets on Ethereum newtork.</p>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <div class="container marketing">
+        <div id="first" class="row featurette">
+            <div class="col-md-7">
+                <h2 class="featurette-heading">Add your game to system. <span
+                        class="text-muted"></span></h2>
+                <p class="lead">You can easily add your game to system.
+                </p>
+                <a class="h3" href="{% url 'dex:create_game' %}">Add game now!</a>
+            </div>
+            <div class="col-md-5">
+                <img src="{% static 'image/index/i1.jpg' %}" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500"
+                     height="500" style="margin-top: 3rem">
+            </div>
+        </div>
+
+        <hr class="featurette-divider">
+
+        <div id="mid" class="row featurette">
+            <div class="col-md-7 order-md-2">
+                <h2 style="margin-top: 5rem" class="featurette-heading">Create and mint tokens. <span
+                        class="text-muted"></span></h2>
+                <p class="lead">You can create tokens using the web tool.</p>
+                <a class="h3" href="{% url 'dex:create_token' %}">Mint!</a>
+            </div>
+            <div class="col-md-5 order-md-1">
+                <img src="{% static 'image/developer/mint.png' %}" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500"
+                     height="500">
+            </div>
+        </div>
+
+        <hr class="featurette-divider">
+
+        <div id="last" class="row featurette">
+            <div class="col-md-7">
+                <h2 class="featurette-heading">SDK. <span class="text-muted">Directly use in your game.</span></h2>
+                <p class="lead">The offered SDKs will help you integrate the system into your game.</p>
+                <a class="h3" href="#">Start to use now!</a>
+            </div>
+            <div class="col-md-5">
+                <img src="{% static 'image/developer/sdk.png' %}" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500"
+                     height="500">
+            </div>
+        </div>
+    </div>
+{% endblock %}

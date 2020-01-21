@@ -18,6 +18,12 @@ class IndexView(generic.TemplateView):
     template_name = 'index.html'
 
 
+class DeveloperTemplateView(LoginRequiredMixin, generic.TemplateView):
+    login_url = '/login'
+    template_name = 'dex/developer.html'
+
+
+
 class GameListView(generic.ListView):
     modal = Game
     context_object_name = 'games'
@@ -265,7 +271,7 @@ def user_login(request):
             login(request, user)
             next = request.GET.get('next')
             return HttpResponseRedirect(
-                next if next else reverse('dex:index'))  ## FIXME redirect me to game developer page
+                next if next else reverse('dex:developer'))
         else:
             return render(request, 'login.html', context={'error': True})
     else:
@@ -287,6 +293,8 @@ def register(request):
         if user_form.is_valid():
             new_user = user_form.save()
             registered = True
+            return HttpResponseRedirect(
+                next if next else reverse('dex:developer'))
         else:
             print(user_form.errors)
     else:
@@ -313,7 +321,7 @@ class GameCreateView(LoginRequiredMixin, generic.CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('dex:list_order', kwargs={'game': self.object.pk})
+        return reverse_lazy('dex:developer')
 
 
 class TokenCreateView(LoginRequiredMixin, generic.CreateView):
@@ -327,15 +335,17 @@ class TokenCreateView(LoginRequiredMixin, generic.CreateView):
         return render(request, self.template_name, context={'form': form})
 
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request.user, request.POST)
+        from .models import photo_path
+        form = self.form_class(request.user, request.POST, request.FILES)
         if form.is_valid():
             data = form.cleaned_data
             data['game'] = data['game'].id
+            data['img'] = photo_path(form.instance, data['img'].name)
             id = web3_utils.create_mint(data)
             if id:
                 form.instance.contract_id = id
                 form.save()
-                return redirect(reverse_lazy('dex:list_order'))
+                return redirect(reverse_lazy('dex:developer'))
             else:
                 return HttpResponse('An error occurred when creating token. Please get contact with administrator.')
         return render(request, self.template_name, context={'form': form})

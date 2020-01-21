@@ -42,4 +42,6 @@ urlpatterns = [
 
     path('create_game/', views.GameCreateView.as_view(), name="create_game"),
     path('create_token/', views.TokenCreateView.as_view(), name="create_token"),
+
+    path('developer/', views.DeveloperTemplateView.as_view(), name="developer")
 ]
