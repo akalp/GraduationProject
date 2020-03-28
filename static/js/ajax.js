@@ -76,8 +76,8 @@ $(document).on('submit', '#item_create_form', function (event) {
     event.preventDefault();
     const contract_id = $('#id_obj').find('option:selected').attr('contract_id');
     if ($('#item_create_form').attr('data-table-from') === "sell") {
-        erc1155.allowance(web3.eth.defaultAccount, operatorAddress, contract_id, (err, res) => {
-            erc1155.approve(operatorAddress, $('#id_obj').find('option:selected').attr('contract_id'), res.toString(), $('#id_quantity').val(), (err, res) => {
+        erc1155.allowance(web3.eth.defaultAccount, "0x87767eca58362c54cef3dFDBf3Dcd4541bCb4dFC", contract_id, (err, res) => {
+            erc1155.approve("0x87767eca58362c54cef3dFDBf3Dcd4541bCb4dFC", $('#id_obj').find('option:selected').attr('contract_id'), res.toString(), $('#id_quantity').val(), (err, res) => {
                 if (err) {
                     alert("You have to allow one of the spender in the list.");
                 } else {
@@ -86,9 +86,9 @@ $(document).on('submit', '#item_create_form', function (event) {
             })
         });
     } else {
-        erc1155.allowance(web3.eth.defaultAccount, operatorAddress, "1", (err, res) => {
+        erc1155.allowance(web3.eth.defaultAccount, "0x87767eca58362c54cef3dFDBf3Dcd4541bCb4dFC", "1", (err, res) => {
             if(!err) {
-                erc1155.transferEthToContract(operatorAddress, res.toString(), {'value': web3.toWei($('#id_value').val(), 'ether')}, (err, res) => {
+                erc1155.transferEthToContract("0x87767eca58362c54cef3dFDBf3Dcd4541bCb4dFC", res.toString(), {'value': web3.toWei($('#id_value').val(), 'ether')}, (err, res) => {
                     if (err) {
                         alert("You have to allow one of the spender in the list.");
                     } else {

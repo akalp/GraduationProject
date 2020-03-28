@@ -23,7 +23,6 @@ class DeveloperTemplateView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'dex/developer.html'
 
 
-
 class GameListView(generic.ListView):
     modal = Game
     context_object_name = 'games'
@@ -340,7 +339,8 @@ class TokenCreateView(LoginRequiredMixin, generic.CreateView):
         if form.is_valid():
             data = form.cleaned_data
             data['game'] = data['game'].id
-            data['img'] = photo_path(form.instance, data['img'].name)
+            if type(data['img']) != str:
+                data['img'] = photo_path(form.instance, data['img'].name)
             id = web3_utils.create_mint(data)
             if id:
                 form.instance.contract_id = id
