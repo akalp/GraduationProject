@@ -411,7 +411,7 @@ function userChange() {
 $(document).on('click', '#withdraw', function () {
     erc1155.methods.balanceOf(web3.eth.defaultAccount, 0).call().then(res => {
         if (res > 0) {
-            erc1155.methods.withdraw().send({"from": web3.eth.defaultAccount}).then(res => {
+            erc1155.methods.withdraw().send({"from": web3.eth.defaultAccount}).then((res, err) => {
                 if (!err) {
                     $('#ETH').text(0)
                 } else {

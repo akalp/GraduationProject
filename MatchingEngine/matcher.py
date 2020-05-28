@@ -5,8 +5,8 @@ from dex.utils import web3_utils
 conn = connect()
 cur = conn.cursor()
 
-#cur.execute("create view sell as select * from dex_sellorder s, (select o.id,usr_addr,value,timestamp,obj_id,quantity,contract_id from dex_order o, dex_token t where t.id=o.obj_id) k where s.order_ptr_id=k.id order by timestamp desc;")
-#cur.execute("create view buy as select * from dex_buyorder b, (select o.id,usr_addr,value,timestamp,obj_id,quantity,contract_id from dex_order o, dex_token t where t.id=o.obj_id) k where b.order_ptr_id=k.id order by timestamp desc;")
+# cur.execute("create view sell as select * from dex_sellorder s, (select o.id,usr_addr,value,timestamp,obj_id,quantity,contract_id from dex_order o, dex_token t where t.id=o.obj_id) k where s.order_ptr_id=k.id order by timestamp desc;")
+# cur.execute("create view buy as select * from dex_buyorder b, (select o.id,usr_addr,value,timestamp,obj_id,quantity,contract_id from dex_order o, dex_token t where t.id=o.obj_id) k where b.order_ptr_id=k.id order by timestamp desc;")
 
 def match():
     threading.Timer(10.0, match).start()

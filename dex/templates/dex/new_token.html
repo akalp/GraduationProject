@@ -15,24 +15,31 @@
 {% endblock %}
 {% block script %}
     <script>
-        addr = $('#token_create_form').find('#id_usr_addr');
-        $(addr).val(web3.eth.defaultAccount);
-        $(addr).prop('readonly', true);
+        $(document).ready( function () {
+            web3.eth.getAccounts().then(e => {
+                web3.eth.defaultAccount = e[0]
 
-        if ($('input[name="is_nf"]:checked').val() === "True") {
-            let q_div = $('#id_quantity');
-            q_div.prop("readonly", true);
-            q_div.parent().hide();
-        }
-        $('input[type="radio"][name="is_nf"]').change(function () {
-            let q_div = $('#id_quantity');
-            if (this.value === 'True') {
-                q_div.prop("readonly", true);
-                q_div.parent().hide();
-            } else {
-                q_div.prop("readonly", false);
-                q_div.parent().show();
-            }
-        });
+                addr = $('#token_create_form').find('#id_usr_addr');
+                $(addr).val(web3.eth.defaultAccount);
+                $(addr).prop('readonly', true);
+
+                if ($('input[name="is_nf"]:checked').val() === "True") {
+                    let q_div = $('#id_quantity');
+                    q_div.prop("readonly", true);
+                    q_div.parent().hide();
+                }
+                $('input[type="radio"][name="is_nf"]').change(function () {
+                    let q_div = $('#id_quantity');
+                    if (this.value === 'True') {
+                        q_div.prop("readonly", true);
+                        q_div.parent().hide();
+                    } else {
+                        q_div.prop("readonly", false);
+                        q_div.parent().show();
+                    }
+                });
+            });
+        })
+
     </script>
 {% endblock %}

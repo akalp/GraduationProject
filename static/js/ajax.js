@@ -17,9 +17,9 @@ $(document).on('click', '.order-button', function () {
             let quantity = $(result).find('#id_quantity');
             $(quantity).parent().hide();
 
-            let del_form=$(result).find('#item_delete_form');
-            if(del_form.length !== 0){
-                del_form.prop('action', del_form.attr('action')+"?usr_addr="+web3.eth.defaultAccount)
+            let del_form = $(result).find('#item_delete_form');
+            if (del_form.length !== 0) {
+                del_form.prop('action', del_form.attr('action') + "?usr_addr=" + web3.eth.defaultAccount)
             }
 
             $('#modal').html(result);
@@ -36,7 +36,7 @@ $(document).on('click', '.alphabet', function () {
         success: function (result) {
             result = jQuery.parseHTML(result);
             $(result).find('a[data-url*="/me"]').map(function () {
-                $(this).attr('data-url', $(this).attr('data-url')+'?usr_addr='+web3.eth.defaultAccount)
+                $(this).attr('data-url', $(this).attr('data-url') + '?usr_addr=' + web3.eth.defaultAccount)
             });
             $('#game-list').html(result);
         }
@@ -76,29 +76,30 @@ $(document).on('submit', '#item_create_form', function (event) {
     event.preventDefault();
     const contract_id = $('#id_obj').find('option:selected').attr('contract_id');
     if ($('#item_create_form').attr('data-table-from') === "sell") {
-        erc1155.allowance(web3.eth.defaultAccount, "0x87767eca58362c54cef3dFDBf3Dcd4541bCb4dFC", contract_id, (err, res) => {
-            erc1155.approve("0x87767eca58362c54cef3dFDBf3Dcd4541bCb4dFC", $('#id_obj').find('option:selected').attr('contract_id'), res.toString(), $('#id_quantity').val(), (err, res) => {
-                if (err) {
-                    alert("You have to allow one of the spender in the list.");
+        erc1155.methods.allowance(web3.eth.defaultAccount, "0x87767eca58362c54cef3dFDBf3Dcd4541bCb4dFC", contract_id).call().then(res => {
+            erc1155.methods.approve("0x87767eca58362c54cef3dFDBf3Dcd4541bCb4dFC", $('#id_obj').find('option:selected').attr('contract_id'), res.toString(), $('#id_quantity').val()).send({"from": web3.eth.defaultAccount}).then((res, err) => {
+                if (!err) {
+                    ajaxCall()
                 } else {
-                    ajaxCall();
+                    alert("Unexpected error. Please contact HuDeX administration.")
                 }
             })
         });
     } else {
-        erc1155.allowance(web3.eth.defaultAccount, "0x87767eca58362c54cef3dFDBf3Dcd4541bCb4dFC", "1", (err, res) => {
-            if(!err) {
-                erc1155.transferEthToContract("0x87767eca58362c54cef3dFDBf3Dcd4541bCb4dFC", res.toString(), {'value': web3.toWei($('#id_value').val(), 'ether')}, (err, res) => {
-                    if (err) {
-                        alert("You have to allow one of the spender in the list.");
+        erc1155.methods.allowance(web3.eth.defaultAccount, "0x87767eca58362c54cef3dFDBf3Dcd4541bCb4dFC", "1").call().then(res => {
+            erc1155.methods.transferEthToContract("0x87767eca58362c54cef3dFDBf3Dcd4541bCb4dFC", res.toString()).send({
+                'from': web3.eth.defaultAccount,
+                'value': web3.utils.toWei($('#id_value').val(), 'ether')
+            }).then(res => {
+                erc1155.methods.balanceOf(web3.eth.defaultAccount, 0).call().then((res, err) => {
+                    if (!err) {
+                        $('#ETH').text(web3.utils.fromWei(res));
+                        ajaxCall()
                     } else {
-                        erc1155.balanceOf(web3.eth.defaultAccount, 0, (err,res)=>{$('#ETH').text(web3.fromWei(res))})
-                        ajaxCall();
+                        alert("Unexpected error. Please contact HuDeX administration.")
                     }
                 })
-            }else{
-                alert(123)
-            }
+            })
         });
     }
 });
@@ -130,11 +131,11 @@ function ajaxCall() {
 $(document).ready(function () {
     $('div.assetname[data-wallet!=' + web3.eth.defaultAccount + ']').find('a').hide();
     $('a[href*="/me"]').map(function () {
-        if(!$(this['href*="?"']))
-            $(this).prop('href', $(this).attr('href')+'?usr_addr='+web3.eth.defaultAccount)
+        if (!$(this['href*="?"']))
+            $(this).prop('href', $(this).attr('href') + '?usr_addr=' + web3.eth.defaultAccount)
     });
     $('a[data-url*="/me"]').map(function () {
-        if(!$(this['data-url*="?"']))
-            $(this).attr('data-url', $(this).attr('data-url')+'?usr_addr='+web3.eth.defaultAccount)
+        if (!$(this['data-url*="?"']))
+            $(this).attr('data-url', $(this).attr('data-url') + '?usr_addr=' + web3.eth.defaultAccount)
     });
 });
