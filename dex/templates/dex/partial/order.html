@@ -12,7 +12,6 @@
     {% for order in orders %}
         <div class="assetscontentitem border col-md-2 m-2">
             <div style="width: 100%;">
-                <a href="{{ detail_url }}{{ order.pk }}">
                     <div class="assetcontenimgdiv">
                         <div class="assetcontenimg">
                             <div style="width: 100%; height: 100%; position: relative;">
@@ -22,7 +21,6 @@
                             </div>
                         </div>
                     </div>
-                </a>
                 <div data-wallet="{{ order.usr_addr }}" class="assetname text-center">{{ order.obj.name }}
                     <a type="button" title="Remove" class="text-danger order-button"
                        data-url="{{ delete_url }}{{ order.pk }}"><i class="fas fa-times"></i></a>

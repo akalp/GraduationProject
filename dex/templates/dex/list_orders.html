@@ -28,7 +28,7 @@
             if (is_nf !== "True") {
                 $(quantity).parent().show();
                 const contract_id = $('#id_obj').find('option:selected').attr('contract_id');
-                await erc1155.balanceOf(web3.eth.defaultAccount, contract_id, async (err, res) => {
+                erc1155.methods.balanceOf(web3.eth.defaultAccount, contract_id).call().then((res, err) => {
                     balance = res
                 });
             } else {

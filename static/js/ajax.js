@@ -129,13 +129,16 @@ function ajaxCall() {
 
 
 $(document).ready(function () {
-    $('div.assetname[data-wallet!=' + web3.eth.defaultAccount + ']').find('a').hide();
-    $('a[href*="/me"]').map(function () {
-        if (!$(this['href*="?"']))
-            $(this).prop('href', $(this).attr('href') + '?usr_addr=' + web3.eth.defaultAccount)
-    });
-    $('a[data-url*="/me"]').map(function () {
-        if (!$(this['data-url*="?"']))
-            $(this).attr('data-url', $(this).attr('data-url') + '?usr_addr=' + web3.eth.defaultAccount)
+    web3.eth.getAccounts().then(e => {
+        web3.eth.defaultAccount = e[0]
+        $('div.assetname[data-wallet!=' + web3.eth.defaultAccount + ']').find('a').hide();
+        $('a[href*="/me"]').map(function () {
+            if (!$(this['href*="?"']))
+                $(this).prop('href', $(this).attr('href') + '?usr_addr=' + web3.eth.defaultAccount)
+        });
+        $('a[data-url*="/me"]').map(function () {
+            if (!$(this['data-url*="?"']))
+                $(this).attr('data-url', $(this).attr('data-url') + '?usr_addr=' + web3.eth.defaultAccount)
+        });
     });
 });
