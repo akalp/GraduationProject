@@ -27,6 +27,100 @@ $(document).on('click', '.order-button', function () {
     })
 });
 
+balance = 0
+$(document).on('click', '#send-token', function () {
+    const modal = $("#modal")
+    modal.html(modal_loading);
+    modal.modal('show');
+    const nf = $(this).parent().data('nf')
+    const token_id = $(this).parent().data('contract-id')
+
+    let form = "<div class=\"modal-dialog modal-dialog-centered\" role=\"document\">" +
+        "<div class=\"modal-content\">" +
+        "<div class=\"modal-header\"><h5 class=\"modal-title\" id=\"exampleModalLongTitle\">Send</h5>" +
+        "<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>" +
+        "</div><div class='modal-body' data-contract-id='" + token_id + "'>"
+
+    if (nf === "False") {
+        erc1155.methods.balanceOf(web3.eth.defaultAccount, token_id).call().then((res, err) => {
+            balance = res
+        });
+        form += "<label for='quantityTo'>Quantity</label><input class='form-control mb-1' id='quantityTo'/>"
+    }
+
+    form +=
+        "<label for='addressTo'>Address</label><input type='text' id='addressTo' class='form-control'><button class='btn btn-success float-right mt-2' id='sendIt' disabled>Ok!</button></div></div></div>"
+
+    modal.html(form)
+});
+
+b = false
+$(document).on('keyup', '#quantityTo', function () {
+    let msg = '<div class="invalid-feedback">You have only ' + balance + '!</div>';
+    const quantity = $('#quantityTo')
+    const address = $('#addressTo')
+
+    if (BigNumber($(quantity).val()).isGreaterThan(balance)) {
+        $(quantity).addClass('is-invalid');
+        if (!b) {
+            $(quantity).after(msg);
+            $('#sendIt').prop('disabled', true);
+        }
+        b = true
+    } else {
+        $(quantity).removeClass('is-invalid');
+        $('#sendIt').prop('disabled', false);
+        if (b) {
+            $(".invalid-feedback")[0].remove();
+        }
+        b = false
+    }
+
+    if (quantity.val() === "" || address.val() === "") {
+        $('#sendIt').prop('disabled', true);
+    } else {
+        $('#sendIt').prop('disabled', false);
+    }
+})
+
+$(document).on('keyup', '#addressTo', function () {
+    const quantity = $('#quantityTo')
+    const address = $('#addressTo')
+    if (quantity.val() === "" || address.val() === "") {
+        $('#sendIt').prop('disabled', true);
+    } else {
+        $('#sendIt').prop('disabled', false);
+    }
+})
+
+
+$(document).on('click', '#sendIt', function () {
+    let quantity = $('#quantityTo')
+    if (quantity.val() === undefined){
+        quantity = "1"
+    }else{
+        quantity = quantity.val()
+    }
+    erc1155.methods.safeTransferFrom(web3.eth.defaultAccount, $('#addressTo').val(), $(this).parent().data('contract-id'), quantity, "0x01").send({from: web3.eth.defaultAccount})
+        .on('receipt', receipt => {
+            console.log(receipt);
+            $('#modal').modal('hide');
+            const newbalance = balance - parseInt(quantity)
+            if (newbalance > 0) {
+                $("div[data-contract-id='" + $(this).parent().data('contract-id') + "'").find('.assetvalue').text()
+            }else{
+                $("div[data-contract-id='" + $(this).parent().data('contract-id') + "'").remove()
+            }
+
+        })
+        .on('error', (err, receipt) => {
+            console.error(err);
+            console.log(receipt);
+            $('#modal').modal('hide');
+        })
+})
+
+
 $(document).on('click', '.alphabet', function () {
     $.ajax({
         beforeSend: function () {
