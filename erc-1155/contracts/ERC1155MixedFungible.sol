@@ -105,8 +105,6 @@ contract ERC1155MixedFungible is ERC1155 {
 
     // override
     function safeTransferFrom(address _from, address _to, uint256 _id, uint256 _value, bytes calldata _data) external {
-
-        require(_to != address(0x0), "cannot send to zero address");
         if (_from == msg.sender || operatorApproval[_from][msg.sender] == true) {
             transferHelper(_from, _to, _id, _value);
             if (_to.isContract()) {
@@ -125,8 +123,6 @@ contract ERC1155MixedFungible is ERC1155 {
 
     // override
     function safeBatchTransferFrom(address _from, address _to, uint256[] calldata _ids, uint256[] calldata _values, bytes calldata _data) external {
-
-        require(_to != address(0x0), "cannot send to zero address");
         require(_ids.length == _values.length, "Array length must match");
 
         // Only supporting a global operator approval allows us to do only 1 check and not to touch storage to handle allowances.
