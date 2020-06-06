@@ -1,3 +1,6 @@
+from urllib import request
+
+
 from GraduationProject.db_connector import connect
 import threading
 from GraduationProject.settings import web3, erc1155
@@ -26,9 +29,13 @@ def run():
             print(id[0])
             img = "token/default_token.jpg"
             if "img" in value.keys():
-                img = value["img"]
+                img = "../media/token/{}.{}".format(id[0], value["img"].split(".")[-1])
+                request.urlretrieve(value["img"], img)
             try:
                 print("insert id:", id[0])
+                name = value["name"]
+                if "data" in value:
+                    name += " "+value["data"]
                 cur.execute("INSERT INTO dex_token (name, img, game_id, is_nf, contract_id) VALUES ('{}','{}','{}','{}','{}');".format(value["name"], img, value["game"], bool(value["is_nf"]), str(id[0])))
                 conn.commit()
             except:
